@@ -1,0 +1,6 @@
+# Versions pinned on purpose: an unpinned SDK upgrade once broke the notebook (the "temperature" error).
+# 故意锁定版本：笔记本曾因 SDK 自动升级而报错（temperature 参数问题）。
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.10.4
+openai==1.58.1

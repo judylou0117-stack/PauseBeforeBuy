@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PauseBeforeBuy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mist: #ECEEF3;
+  --paper: #FAFAFC;
+  --ink: #232838;
+  --muted: #5D6376;
+  --line: #D5D8E2;
+  --dusk: #54468A;
+  --dusk-soft: #E6E2F3;
+  --dusk-deep: #54468A;
+  --glow: #E3A33A;
+  --glow-soft: #FBEFD9;
+  --danger-text: #8A3B2E;
+  --font-display: "Bricolage Grotesque", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mist: #15151D;
+    --paper: #1E1E29;
+    --ink: #ECEAF3;
+    --muted: #A8A5B8;
+    --line: #34344A;
+    --dusk: #AC9DEB;
+    --dusk-soft: #2C2745;
+    --dusk-deep: #3B3272;
+    --glow: #F0B955;
+    --glow-soft: #3A2F1B;
+    --danger-text: #F0A99A;
+  }
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  background: var(--mist);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; color: inherit; }
+a { color: var(--dusk); }
+:focus-visible { outline: 3px solid var(--glow); outline-offset: 2px; border-radius: 4px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- header ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1120px; margin: 0 auto; padding: 1.1rem 1.25rem;
+}
+.brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--dusk);
+  display: grid; place-items: center;
+}
+.brand-mark span { display: flex; gap: 5px; }
+.brand-mark i { display: block; width: 4px; height: 13px; border-radius: 2px; background: var(--glow); }
+.brand-name { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; }
+.lang { display: flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--paper); }
+.lang button {
+  border: 0; background: transparent; padding: .3rem .85rem; border-radius: 999px; cursor: pointer; font-size: .9rem;
+}
+.lang button[aria-pressed="true"] { background: var(--dusk); color: var(--paper); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+/* ---------- form view ---------- */
+.hero { max-width: 640px; padding: 2.5rem 0 1.75rem; }
+.hero h1 {
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em;
+  font-size: clamp(2.2rem, 7vw, 3.6rem); line-height: 1.02; margin: 0 0 1rem;
+}
+.hero p { margin: 0; color: var(--muted); font-size: 1.15rem; max-width: 34em; }
+
+.sheet {
+  max-width: 640px; background: var(--paper); border: 1px solid var(--line);
+  border-radius: 22px; padding: 1.5rem 1.35rem 1.6rem;
+}
+.progress { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; color: var(--muted); font-size: .95rem; }
+.progress-track { flex: 1; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.progress-track span { display: block; height: 100%; width: 50%; background: var(--dusk); transition: width .35s ease; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.row > * { min-width: 0; }
+legend { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -.01em; margin-bottom: 1.1rem; padding: 0; }
+.field { margin-bottom: 1.1rem; }
+.field label, .field .label { display: block; font-weight: 700; margin-bottom: .3rem; }
+.hint { display: block; color: var(--muted); font-size: .92rem; font-weight: 400; margin-top: -.1rem; margin-bottom: .35rem; }
+.input-wrap { display: flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 12px; background: var(--mist); overflow: hidden; }
+.input-wrap:focus-within { border-color: var(--dusk); }
+.input-wrap .affix { display: grid; place-items: center; padding: 0 .8rem; color: var(--muted); font-size: .95rem; white-space: nowrap; }
+.input-wrap input { flex: 1; min-width: 0; border: 0; background: transparent; padding: .7rem .8rem; font-size: 1.1rem; }
+.input-wrap input:focus { outline: none; }
+.input-wrap.invalid { border-color: var(--danger-text); }
+.error { color: var(--danger-text); font-size: .92rem; margin-top: .3rem; }
+.row { display: grid; gap: 0 1rem; }
+@media (min-width: 560px) { .row.two { grid-template-columns: 1fr 1fr; } }
+
+.fee-choices { display: grid; gap: .5rem; }
+.field .choice {
+  display: flex; font-weight: 400; margin: 0; gap: .75rem; align-items: flex-start; padding: .75rem .9rem;
+  border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--mist);
+}
+.field .choice input { margin-top: .35rem; accent-color: var(--dusk); }
+.choice:has(input:checked) { border-color: var(--dusk); background: var(--dusk-soft); }
+.choice strong { display: block; }
+.choice small { color: var(--muted); font-size: .9rem; }
+
+details.advanced { margin: .5rem 0 1.1rem; border-top: 1px solid var(--line); padding-top: .8rem; }
+details.advanced summary { cursor: pointer; color: var(--dusk); font-weight: 700; }
+details.advanced[open] summary { margin-bottom: .9rem; }
+
+.privacy { color: var(--muted); font-size: .92rem; margin: .25rem 0 1.25rem; }
+.privacy button { background: none; border: 0; padding: 0; color: var(--dusk); text-decoration: underline; cursor: pointer; font-size: inherit; }
+
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.btn {
+  border: 0; border-radius: 999px; padding: .8rem 1.4rem; font-weight: 700; cursor: pointer; font-size: 1.02rem;
+}
+.btn-primary { background: var(--dusk); color: var(--paper); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-quiet { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.link-btn { background: none; border: 0; color: var(--dusk); text-decoration: underline; cursor: pointer; padding: .4rem 0; font-size: .98rem; }
+
+/* ---------- pause overlay ---------- */
+.pause {
+  position: fixed; inset: 0; z-index: 50; display: none;
+  background: var(--mist); padding: env(safe-area-inset-top, 0px) 1.5rem env(safe-area-inset-bottom, 0px);
+  flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+.pause.show { display: flex; }
+.breath {
+  width: min(56vw, 240px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--glow) 0%, var(--glow) 38%, var(--glow-soft) 70%);
+  animation: breathe 5s ease-in-out infinite;
+  margin-bottom: 2.25rem;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(.72); opacity: .75; }
+  50% { transform: scale(1); opacity: 1; }
+}
+.pause h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 5vw, 2.1rem); line-height: 1.2; margin: 0 0 .6rem; max-width: 18em; }
+.pause p { color: var(--muted); margin: 0 0 2rem; min-height: 1.6em; }
+@media (prefers-reduced-motion: reduce) {
+  .breath { animation: none; transform: scale(.9); }
+  .progress-track span { transition: none; }
+}
+
+/* ---------- results ---------- */
+.results-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem; padding: 1.25rem 0 .5rem; }
+.banner {
+  background: var(--glow-soft); border: 1px solid var(--glow); color: var(--ink);
+  border-radius: 12px; padding: .75rem 1rem; font-size: .95rem; margin: .5rem 0 1rem;
+}
+.headline {
+  font-family: var(--font-display); font-weight: 500; letter-spacing: -.01em;
+  font-size: clamp(1.45rem, 3.6vw, 2.15rem); line-height: 1.25; margin: .75rem 0 .75rem; max-width: 30em;
+}
+.baseline { color: var(--muted); margin: 0 0 2rem; }
+
+.reveal {
+  display: grid; gap: 0; border-radius: 22px; overflow: hidden; margin-bottom: 2.5rem;
+  border: 1px solid var(--line);
+}
+@media (min-width: 720px) { .reveal { grid-template-columns: 1fr 1fr; } }
+.reveal-side { padding: 1.5rem 1.4rem; }
+.reveal-side.seen { background: var(--paper); }
+.reveal-side.real { background: var(--dusk-deep); color: #FAFAFC; }
+.reveal-side .cap { font-size: .98rem; margin: 0 0 .4rem; opacity: .85; }
+.reveal-side .big { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 9vw, 4.4rem); line-height: 1; letter-spacing: -.03em; margin: 0 0 .4rem; }
+.reveal-side.real .big { color: var(--glow); }
+.reveal-side .unit { font-size: 1rem; margin: 0; }
+.reveal-foot { grid-column: 1 / -1; background: var(--glow-soft); padding: 1rem 1.4rem; margin: 0; }
+
+.section-title { font-family: var(--font-display); font-weight: 700; font-size: 1.45rem; letter-spacing: -.01em; margin: 0 0 1rem; }
+
+.compare {
+  display: grid; background: var(--paper); border: 1px solid var(--line); border-radius: 22px; margin-bottom: 2.5rem;
+}
+@media (min-width: 900px) { .compare { grid-template-columns: repeat(3, 1fr); } }
+.option { padding: 1.4rem 1.35rem 1.2rem; border-top: 1px solid var(--line); }
+.option:first-child { border-top: 0; }
+@media (min-width: 900px) {
+  .option { border-top: 0; border-left: 1px solid var(--line); }
+  .option:first-child { border-left: 0; }
+}
+.option h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; margin: 0 0 .5rem; }
+.risk { display: flex; align-items: center; gap: .5rem; font-size: .95rem; color: var(--muted); margin-bottom: .75rem; }
+.dots { display: inline-flex; gap: 4px; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink); }
+.dots i.on { background: var(--ink); }
+.not-possible { color: var(--danger-text); font-weight: 700; margin: 0 0 .75rem; }
+.figures { margin: 0 0 1.1rem; }
+.figures div { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border-bottom: 1px dashed var(--line); }
+.figures dt { color: var(--muted); }
+.figures dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.runway { margin: .25rem 0 1rem; }
+.runway-label { display: flex; justify-content: space-between; font-size: .95rem; margin-bottom: .4rem; }
+.runway-label strong { font-variant-numeric: tabular-nums; }
+.runway-track { position: relative; height: 12px; border-radius: 6px; background: var(--mist); border: 1px solid var(--line); }
+.runway-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--dusk); }
+.runway-target { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--glow); }
+.runway-note { font-size: .85rem; color: var(--muted); margin-top: .35rem; }
+.flags { list-style: none; padding: 0; margin: 0 0 .75rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.flags li { font-size: .85rem; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .6rem; color: var(--muted); }
+details.steps summary { cursor: pointer; color: var(--dusk); font-weight: 700; font-size: .95rem; }
+details.steps ol { padding-left: 1.2rem; margin: .75rem 0 0; font-size: .9rem; }
+details.steps li { margin-bottom: .65rem; }
+details.steps .formula { color: var(--muted); display: block; }
+details.steps .result { font-weight: 700; }
+
+.plain { background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: 1.5rem 1.4rem; margin-bottom: 2.5rem; }
+.plain-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .5rem 1rem; margin-bottom: 1rem; }
+.plain-head .section-title { margin: 0; }
+.tag { font-size: .88rem; color: var(--muted); }
+.verified { display: inline-flex; align-items: center; gap: .35rem; font-size: .88rem; background: var(--dusk-soft); color: var(--ink); border-radius: 999px; padding: .2rem .7rem; }
+.plain-item { padding: 1rem 0; border-top: 1px solid var(--line); max-width: 46em; }
+.plain-item h4 { margin: 0 0 .35rem; font-size: 1.05rem; }
+.plain-item p { margin: 0 0 .4rem; }
+.plain-item .main-risk { color: var(--muted); }
+.unverified { color: var(--muted); margin: 0; }
+
+.reflect { display: grid; gap: 1.25rem; margin-bottom: 2.5rem; }
+@media (min-width: 900px) { .reflect { grid-template-columns: 1.2fr 1fr; } }
+.questions ol { margin: 0; padding-left: 1.25rem; }
+.questions li { margin-bottom: .75rem; max-width: 40em; }
+.money-card { background: var(--glow-soft); border-radius: 22px; padding: 1.4rem; }
+.money-card h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; margin: 0 0 .6rem; }
+.money-card p { margin: 0 0 .6rem; }
+.money-card p:last-child { margin: 0; }
+
+.foot { border-top: 1px solid var(--line); padding-top: 1.25rem; color: var(--muted); font-size: .92rem; }
+.foot ul { padding-left: 1.2rem; margin: .5rem 0 0; }
+
+/* ---------- intro view ---------- */
+.intro-hero { padding: 3rem 0 2.5rem; max-width: 760px; }
+.intro-hero h1 {
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em;
+  font-size: clamp(2.6rem, 9vw, 5rem); line-height: .98; margin: 0 0 1.25rem;
+}
+.intro-hero p { font-size: 1.2rem; color: var(--muted); margin: 0 0 1.75rem; max-width: 32em; }
+.scenes { display: grid; gap: 1.25rem; margin-bottom: 3rem; }
+@media (min-width: 760px) { .scenes { grid-template-columns: 1fr 1fr; } }
+.scene { margin: 0; }
+.scene svg { display: block; width: 100%; height: auto; border-radius: 22px; }
+.scene figcaption { padding: .9rem .25rem 0; }
+.scene figcaption strong { display: block; font-family: var(--font-display); font-size: 1.2rem; margin-bottom: .2rem; }
+.scene figcaption span { color: var(--muted); }
+.fact {
+  border-left: 4px solid var(--glow); padding: .25rem 0 .25rem 1.1rem; margin: 0 0 3rem; max-width: 44em;
+}
+.fact p { margin: 0 0 .35rem; font-size: 1.1rem; }
+.fact small { color: var(--muted); }
+.how { margin-bottom: 3rem; }
+.how ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; counter-reset: how; }
+@media (min-width: 760px) { .how ol { grid-template-columns: repeat(3, 1fr); } }
+.how li { counter-increment: how; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 1.2rem; }
+.how li::before {
+  content: counter(how); display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%;
+  background: var(--dusk); color: var(--paper); font-weight: 700; margin-bottom: .6rem;
+}
+.how li strong { display: block; margin-bottom: .2rem; }
+.how li span { color: var(--muted); }
+.promises { display: grid; gap: 1.5rem; margin-bottom: 3rem; }
+@media (min-width: 760px) { .promises { grid-template-columns: repeat(3, 1fr); } }
+.promise strong { display: block; font-family: var(--font-display); font-size: 1.15rem; margin-bottom: .3rem; }
+.promise span { color: var(--muted); }
+.intro-cta { background: var(--dusk-deep); color: #FAFAFC; border-radius: 26px; padding: 2rem 1.5rem; text-align: left; }
+.intro-cta h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 4.5vw, 2.4rem); line-height: 1.1; margin: 0 0 .6rem; }
+.intro-cta p { margin: 0 0 1.4rem; opacity: .85; max-width: 34em; }
+.intro-cta .btn-primary { background: var(--glow); color: #232838; }
+/* illustration colours */
+.ill-bg { fill: var(--paper); stroke: var(--line); }
+.ill-night { fill: var(--dusk-deep); }
+.ill-ink { fill: var(--ink); }
+.ill-muted { fill: var(--muted); }
+.ill-line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.ill-soft { fill: var(--dusk-soft); }
+.ill-dusk { fill: var(--dusk); }
+.ill-glow { fill: var(--glow); }
+.ill-glowsoft { fill: var(--glow-soft); }
+.ill-white { fill: #FAFAFC; }
+.ill-text { font-family: var(--font-body); font-weight: 700; }
+
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" id="home-link" aria-label="PauseBeforeBuy">
+    <span class="brand-mark" aria-hidden="true"><span><i></i><i></i></span></span>
+    <span class="brand-name">PauseBeforeBuy</span>
+  </a>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= INTRO ================= -->
+  <section id="intro-view">
+    <div class="intro-hero">
+      <h1 data-i18n="introTitle"></h1>
+      <p data-i18n="introText"></p>
+      <button type="button" class="btn btn-primary" data-start data-i18n="introStart"></button>
+    </div>
+
+    <div class="scenes">
+      <figure class="scene">
+        <svg viewBox="0 0 320 210" role="img" aria-labelledby="s1t">
+          <title id="s1t" data-i18n="scene1Alt"></title>
+          <rect class="ill-night" width="320" height="210" rx="22"/>
+          <circle class="ill-glow" cx="262" cy="48" r="22"/><circle class="ill-night" cx="272" cy="40" r="20"/>
+          <circle class="ill-white" cx="60" cy="34" r="2"/><circle class="ill-white" cx="110" cy="58" r="1.5"/><circle class="ill-white" cx="205" cy="26" r="2"/><circle class="ill-white" cx="30" cy="92" r="1.5"/>
+          <rect class="ill-glowsoft" x="118" y="44" width="92" height="150" rx="14"/>
+          <rect class="ill-bg" x="126" y="58" width="76" height="92" rx="6"/>
+          <rect class="ill-soft" x="134" y="66" width="60" height="40" rx="4"/>
+          <path class="ill-line" d="M150 94 l10 -14 l10 10 l8 -8 l8 12" />
+          <rect class="ill-muted" x="134" y="114" width="44" height="5" rx="2.5"/>
+          <rect class="ill-muted" x="134" y="124" width="30" height="5" rx="2.5"/>
+          <rect class="ill-dusk" x="126" y="158" width="76" height="24" rx="12"/>
+          <text class="ill-text ill-white" x="164" y="174" font-size="11" text-anchor="middle" data-i18n="s1Button"></text>
+          <text class="ill-text ill-glow" x="30" y="190" font-size="13">1:07</text>
+        </svg>
+        <figcaption><strong data-i18n="scene1Title"></strong><span data-i18n="scene1Text"></span></figcaption>
+      </figure>
+
+      <figure class="scene">
+        <svg viewBox="0 0 320 210" role="img" aria-labelledby="s2t">
+          <title id="s2t" data-i18n="scene2Alt"></title>
+          <rect class="ill-bg" width="320" height="210" rx="22"/>
+          <g transform="rotate(-6 160 105)">
+            <path class="ill-glowsoft" d="M70 55 h150 l30 50 l-30 50 h-150 z"/>
+            <circle class="ill-bg" cx="222" cy="105" r="8"/>
+            <text class="ill-text ill-ink" x="88" y="100" font-size="30" data-i18n="s2Big"></text>
+            <text class="ill-text ill-muted" x="90" y="124" font-size="12" data-i18n="s2Small"></text>
+          </g>
+          <rect class="ill-soft" x="40" y="168" width="240" height="4" rx="2"/>
+          <rect class="ill-soft" x="40" y="178" width="200" height="4" rx="2"/>
+          <rect class="ill-soft" x="40" y="188" width="220" height="4" rx="2"/>
+        </svg>
+        <figcaption><strong data-i18n="scene2Title"></strong><span data-i18n="scene2Text"></span></figcaption>
+      </figure>
+
+      <figure class="scene">
+        <svg viewBox="0 0 320 210" role="img" aria-labelledby="s3t">
+          <title id="s3t" data-i18n="scene3Alt"></title>
+          <rect class="ill-bg" width="320" height="210" rx="22"/>
+          <path class="ill-line" d="M40 178 h250" />
+          <g>
+            <rect class="ill-dusk" x="52" y="150" width="30" height="26" rx="4"/>
+            <rect class="ill-dusk" x="94" y="150" width="30" height="26" rx="4"/><rect class="ill-glow" x="94" y="120" width="30" height="28" rx="4"/>
+            <rect class="ill-dusk" x="136" y="150" width="30" height="26" rx="4"/><rect class="ill-glow" x="136" y="120" width="30" height="28" rx="4"/><rect class="ill-muted" x="136" y="92" width="30" height="26" rx="4"/>
+            <rect class="ill-dusk" x="178" y="150" width="30" height="26" rx="4"/><rect class="ill-glow" x="178" y="120" width="30" height="28" rx="4"/><rect class="ill-muted" x="178" y="92" width="30" height="26" rx="4"/><rect class="ill-soft" x="178" y="62" width="30" height="28" rx="4"/>
+            <rect class="ill-dusk" x="220" y="150" width="30" height="26" rx="4"/><rect class="ill-glow" x="220" y="120" width="30" height="28" rx="4"/><rect class="ill-muted" x="220" y="92" width="30" height="26" rx="4"/><rect class="ill-soft" x="220" y="62" width="30" height="28" rx="4"/><rect class="ill-dusk" x="220" y="34" width="30" height="26" rx="4" opacity=".55"/>
+          </g>
+          <path class="ill-line" d="M268 44 v120" stroke-dasharray="4 6"/>
+          <text class="ill-text ill-muted" x="52" y="198" font-size="11" data-i18n="s3Label"></text>
+        </svg>
+        <figcaption><strong data-i18n="scene3Title"></strong><span data-i18n="scene3Text"></span></figcaption>
+      </figure>
+
+      <figure class="scene">
+        <svg viewBox="0 0 320 210" role="img" aria-labelledby="s4t">
+          <title id="s4t" data-i18n="scene4Alt"></title>
+          <rect class="ill-bg" width="320" height="210" rx="22"/>
+          <rect class="ill-soft" x="84" y="48" width="96" height="16" rx="6"/>
+          <path class="ill-line" d="M92 64 v106 q0 14 14 14 h52 q14 0 14 -14 v-106" />
+          <rect class="ill-glow" x="95" y="160" width="74" height="21" rx="8"/>
+          <circle class="ill-glowsoft" cx="112" cy="156" r="7"/><circle class="ill-glowsoft" cx="130" cy="158" r="7"/>
+          <g transform="rotate(12 238 92)">
+            <rect class="ill-bg" x="200" y="66" width="80" height="54" rx="6"/>
+            <path class="ill-line" d="M200 72 l40 26 l40 -26" />
+          </g>
+          <path class="ill-line" d="M190 60 l-10 -10 M200 50 l-4 -14 M214 50 l4 -14" />
+          <text class="ill-text ill-dusk" x="210" y="150" font-size="13" data-i18n="s4Label"></text>
+        </svg>
+        <figcaption><strong data-i18n="scene4Title"></strong><span data-i18n="scene4Text"></span></figcaption>
+      </figure>
+    </div>
+
+    <blockquote class="fact">
+      <p data-i18n="factText"></p>
+      <small data-i18n="factSource"></small>
+    </blockquote>
+
+    <section class="how">
+      <h2 class="section-title" data-i18n="howTitle"></h2>
+      <ol>
+        <li><strong data-i18n="how1Title"></strong><span data-i18n="how1Text"></span></li>
+        <li><strong data-i18n="how2Title"></strong><span data-i18n="how2Text"></span></li>
+        <li><strong data-i18n="how3Title"></strong><span data-i18n="how3Text"></span></li>
+      </ol>
+    </section>
+
+    <section class="promises">
+      <div class="promise"><strong data-i18n="p1Title"></strong><span data-i18n="p1Text"></span></div>
+      <div class="promise"><strong data-i18n="p2Title"></strong><span data-i18n="p2Text"></span></div>
+      <div class="promise"><strong data-i18n="p3Title"></strong><span data-i18n="p3Text"></span></div>
+    </section>
+
+    <section class="intro-cta">
+      <h2 data-i18n="ctaTitle"></h2>
+      <p data-i18n="ctaText"></p>
+      <button type="button" class="btn btn-primary" data-start data-i18n="introStart"></button>
+    </section>
+  </section>
+
+  <!-- ================= FORM ================= -->
+  <section id="form-view" hidden>
+    <div class="hero">
+      <h1 data-i18n="heroTitle"></h1>
+      <p data-i18n="heroText"></p>
+    </div>
+
+    <div class="sheet" id="form">
+      <div class="progress">
+        <span id="step-count"></span>
+        <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+      </div>
+
+      <fieldset id="step1">
+        <legend data-i18n="step1Title"></legend>
+        <div class="field">
+          <label for="item" data-i18n="itemLabel"></label>
+          <span class="hint" data-i18n="itemHint"></span>
+          <div class="input-wrap"><input id="item" maxlength="40" autocomplete="off"></div>
+        </div>
+        <div class="row two">
+          <div class="field">
+            <label for="price" data-i18n="priceLabel"></label>
+            <div class="input-wrap"><span class="affix">SGD</span><input id="price" inputmode="decimal"></div>
+            <div class="error" id="err-price" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="months" data-i18n="monthsLabel"></label>
+            <div class="input-wrap"><input id="months" inputmode="numeric"><span class="affix" data-i18n="monthsUnit"></span></div>
+            <div class="error" id="err-months" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="fee-type-label" data-i18n="feeTypeLabel"></span>
+          <div class="fee-choices" role="radiogroup" aria-labelledby="fee-type-label">
+            <label class="choice"><input type="radio" name="feeType" value="none" checked><span><strong data-i18n="feeNone"></strong><small data-i18n="feeNoneHint"></small></span></label>
+            <label class="choice"><input type="radio" name="feeType" value="flat"><span><strong data-i18n="feeFlat"></strong><small data-i18n="feeFlatHint"></small></span></label>
+            <label class="choice"><input type="radio" name="feeType" value="apr"><span><strong data-i18n="feeApr"></strong><small data-i18n="feeAprHint"></small></span></label>
+          </div>
+        </div>
+        <div class="field" id="rate-field" hidden>
+          <label for="rate" id="rate-label"></label>
+          <div class="input-wrap"><input id="rate" inputmode="decimal"><span class="affix" id="rate-unit"></span></div>
+          <div class="error" id="err-rate" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="upfront" data-i18n="upfrontLabel"></label>
+          <span class="hint" data-i18n="upfrontHint"></span>
+          <div class="input-wrap"><span class="affix">SGD</span><input id="upfront" inputmode="decimal" placeholder="0"></div>
+          <div class="error" id="err-upfront" aria-live="polite"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="to-step2" data-i18n="next"></button>
+          <button type="button" class="link-btn" id="sample" data-i18n="trySample"></button>
+        </div>
+      </fieldset>
+
+      <fieldset id="step2" hidden>
+        <legend data-i18n="step2Title"></legend>
+        <div class="row two">
+          <div class="field">
+            <label for="income" data-i18n="incomeLabel"></label>
+            <div class="input-wrap"><span class="affix">SGD</span><input id="income" inputmode="decimal"></div>
+            <div class="error" id="err-income" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="savings" data-i18n="savingsLabel"></label>
+            <div class="input-wrap"><span class="affix">SGD</span><input id="savings" inputmode="decimal"></div>
+            <div class="error" id="err-savings" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="essentials" data-i18n="essentialsLabel"></label>
+            <span class="hint" data-i18n="essentialsHint"></span>
+            <div class="input-wrap"><span class="affix">SGD</span><input id="essentials" inputmode="decimal"></div>
+            <div class="error" id="err-essentials" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="debt" data-i18n="debtLabel"></label>
+            <span class="hint" data-i18n="debtHint"></span>
+            <div class="input-wrap"><span class="affix">SGD</span><input id="debt" inputmode="decimal" placeholder="0"></div>
+            <div class="error" id="err-debt" aria-live="polite"></div>
+          </div>
+        </div>
+        <details class="advanced">
+          <summary data-i18n="advanced"></summary>
+          <div class="row two">
+            <div class="field">
+              <label for="target" data-i18n="targetLabel"></label>
+              <span class="hint" data-i18n="targetHint"></span>
+              <div class="input-wrap"><input id="target" inputmode="decimal" value="3"><span class="affix" data-i18n="monthsUnit"></span></div>
+              <div class="error" id="err-target" aria-live="polite"></div>
+            </div>
+            <div class="field">
+              <label for="dti" data-i18n="dtiLabel"></label>
+              <span class="hint" data-i18n="dtiHint"></span>
+              <div class="input-wrap"><input id="dti" inputmode="decimal" value="35"><span class="affix">%</span></div>
+              <div class="error" id="err-dti" aria-live="polite"></div>
+            </div>
+          </div>
+        </details>
+        <p class="privacy"><span data-i18n="privacy"></span> <button type="button" id="clear-data" data-i18n="clearData"></button></p>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="submit-btn" data-i18n="submit"></button>
+          <button type="button" class="btn btn-quiet" id="back" data-i18n="back"></button>
+        </div>
+        <div class="error" id="err-form" aria-live="polite"></div>
+      </fieldset>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section id="results-view" hidden aria-live="polite">
+    <div class="results-top">
+      <button type="button" class="btn btn-quiet" id="edit" data-i18n="edit"></button>
+    </div>
+    <div class="banner" id="demo-banner" hidden></div>
+    <h2 class="headline" id="headline" tabindex="-1"></h2>
+    <p class="baseline" id="baseline"></p>
+
+    <div class="reveal" id="reveal" hidden></div>
+
+    <h2 class="section-title" data-i18n="compareTitle"></h2>
+    <div class="compare" id="compare"></div>
+
+    <section class="plain" id="plain"></section>
+
+    <div class="reflect">
+      <section class="questions">
+        <h2 class="section-title" data-i18n="questionsTitle"></h2>
+        <ol id="questions"></ol>
+      </section>
+      <section class="money-card" id="money-card" hidden></section>
+    </div>
+
+    <footer class="foot">
+      <p data-i18n="disclaimer"></p>
+      <strong data-i18n="assumptionsTitle"></strong>
+      <ul id="assumptions"></ul>
+    </footer>
+  </section>
+</main>
+
+<!-- ================= PAUSE ================= -->
+<div class="pause" id="pause" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+  <div class="breath" aria-hidden="true"></div>
+  <h2 id="pause-title" data-i18n="pauseTitle"></h2>
+  <p id="pause-status"></p>
+  <button type="button" class="btn btn-quiet" id="skip" data-i18n="skip"></button>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG — set this to your FastAPI URL once the back end is deployed,
+   e.g. "https://pausebeforebuy-api.onrender.com" (no slash at the end).
+   Empty = demo mode.  ｜ 后端部署后填入网址；留空则为演示模式。
+   ===================================================================== */
+const API_BASE_URL = "";
+const PAUSE_MS = 5000;
+
+/* ---------------- translations ---------------- */
+const T = {
+  en: {
+    introTitle: "Buying has never been this easy.",
+    introText: "One tap, no cash, small monthly numbers. PauseBeforeBuy gives you a moment to see what a purchase really costs before you commit.",
+    introStart: "Start my pause",
+    scene1Title: "The 1 a.m. checkout",
+    scene1Text: "Late at night, one tap is all it takes. No money leaves your hand, so it barely feels like spending.",
+    scene1Alt: "A phone glowing at night with a buy-now button",
+    s1Button: "Buy now",
+    scene2Title: "The small monthly number",
+    scene2Text: "The price shows up as a small monthly amount. The total, the fees and the true yearly cost sit in the fine print.",
+    scene2Alt: "A price tag showing only a small monthly amount above fine print",
+    s2Big: "$50/mo",
+    s2Small: "12 easy payments*",
+    scene3Title: "Plans that stack up",
+    scene3Text: "Phone, earbuds, a trip. Each plan looks light on its own; together they fill every month.",
+    scene3Alt: "Monthly bars growing taller as more instalment plans stack up",
+    s3Label: "Each month, another plan",
+    scene4Title: "No cushion left",
+    scene4Text: "When savings run low, one surprise bill is enough to push you into more debt.",
+    scene4Alt: "A nearly empty savings jar with a bill arriving",
+    s4Label: "Surprise bill",
+    factText: "In Singapore, accredited buy-now-pay-later providers cap what you can owe them at SGD 2,000 until they check your income. But that limit is per app; nobody adds up what you owe across all of them.",
+    factSource: "Source: Singapore FinTech Association, BNPL Code of Conduct (2022).",
+    howTitle: "How it works",
+    how1Title: "Tell us what you want to buy",
+    how1Text: "The price, the instalment plan and its fees.",
+    how2Title: "Add your finances",
+    how2Text: "Income, savings and monthly spending. They stay on your device.",
+    how3Title: "Pause, then compare",
+    how3Text: "Paying in full, instalments and waiting, side by side, including the true yearly cost.",
+    p1Title: "We never tell you what to buy",
+    p1Text: "You see the trade-offs. The decision stays yours.",
+    p2Title: "Every number comes from a calculator",
+    p2Text: "AI only explains the results in plain words, and every number it writes is checked.",
+    p3Title: "Your data stays with you",
+    p3Text: "Nothing is linked to your bank or payment apps.",
+    ctaTitle: "Thinking about buying something?",
+    ctaText: "It takes about a minute. The purchase will still be there afterwards.",
+    heroTitle: "Before you tap pay, take a pause.",
+    heroText: "See what this purchase really costs you: paying in full, paying in instalments, or waiting and saving first.",
+    stepOf: (a, b) => `Step ${a} of ${b}`,
+    step1Title: "What are you thinking of buying?",
+    itemLabel: "Item (optional)",
+    itemHint: "Just a name, like “Laptop” or “Concert ticket”.",
+    priceLabel: "Price",
+    monthsLabel: "Instalment plan",
+    monthsUnit: "months",
+    feeTypeLabel: "What does the instalment plan charge?",
+    feeNone: "Nothing extra",
+    feeNoneHint: "0% instalment, buy now pay later",
+    feeFlat: "A fee on every instalment",
+    feeFlatHint: "Common for card instalment plans, e.g. 0.6% per month",
+    feeApr: "An annual interest rate",
+    feeAprHint: "Common for personal loans, e.g. 12% a year",
+    rateFlat: "Fee per instalment",
+    rateFlatUnit: "% per month",
+    rateApr: "Annual interest rate",
+    rateAprUnit: "% per year",
+    upfrontLabel: "One-time fee (optional)",
+    upfrontHint: "A processing or admin fee charged once.",
+    next: "Next: your finances",
+    trySample: "Try a sample case",
+    step2Title: "Your finances",
+    incomeLabel: "Monthly take-home income",
+    savingsLabel: "Cash savings right now",
+    essentialsLabel: "Monthly essential spending",
+    essentialsHint: "Rent, food, transport, bills.",
+    debtLabel: "Existing monthly repayments",
+    debtHint: "Other instalments or loans you already pay.",
+    advanced: "Adjust safety settings",
+    targetLabel: "Emergency fund target",
+    targetHint: "MAS suggests at least 3 to 6 months of expenses.",
+    dtiLabel: "Repayment warning line",
+    dtiHint: "Share of income going to repayments.",
+    privacy: "Your numbers stay on this device and are not stored by us.",
+    clearData: "Clear my data",
+    cleared: "Your saved numbers have been cleared.",
+    submit: "Pause and compare",
+    back: "Back",
+    pauseTitle: "Take a breath. This decision is worth a few more seconds.",
+    pauseWait: "Checking the numbers…",
+    pauseWaking: "The calculator is waking up. The first request can take up to a minute.",
+    skip: "Skip",
+    edit: "Change my numbers",
+    demoNoBackend: "Demo mode: these are sample results for a SGD 6,000 laptop, not your own numbers. Once the calculator is connected, your own results will appear here.",
+    demoFailed: "Demo mode: the calculator could not be reached, so these are sample results for a SGD 6,000 laptop, not your own numbers. Please try again later.",
+    baseline: (s, r) => `Today you have ${s} left each month, and your savings would cover ${r} of essential spending.`,
+    seenCap: "What the offer says",
+    realCap: "What it really costs per year",
+    perInstalment: "per instalment",
+    perYear: "a year, as quoted",
+    zeroRate: "0% instalment",
+    plusFee: fee => `plus a one-time fee of ${fee}`,
+    effRate: "effective annual rate",
+    revealFoot: (extra, n, fee) => `Over ${n} months you would pay ${extra} more than the price.` + (fee ? ` ${fee} of every monthly payment is fee.` : ""),
+    compareTitle: "Three ways to go",
+    opt: { pay_in_full: "Pay in full", instalment: "Pay in instalments", delay: "Wait and save" },
+    risk: { low: "Low risk", medium: "Medium risk", high: "High risk" },
+    notPossible: { pay_in_full: "Not possible with your current savings.", instalment: "The monthly payment is more than you have left each month.", delay: "You have nothing left each month to save." },
+    f: {
+      totalPaid: "Total you pay", extra: "Extra cost", monthlyPay: "Monthly payment", feePart: "of which fee",
+      savingsAfter: "Savings after buying", surplus: "Left each month", surplusDuring: "Left each month during the plan",
+      dti: "Share of income on repayments", monthsToSave: "Time to save up", savePerMonth: "Saving each month",
+      notReachable: "Not reachable"
+    },
+    runwayLabel: "Savings would cover",
+    runwayTarget: t => `Line marks your ${t}-month target`,
+    flags: {
+      insufficient_savings: "Savings not enough", negative_monthly_cash_flow: "Spending more than you earn",
+      below_emergency_target: "Below emergency target", high_debt_to_income: "High share of income on repayments",
+      severe_debt_to_income: "Very high share of income on repayments", extra_borrowing_cost: "Costs extra to borrow",
+      cannot_save_up: "Cannot save up"
+    },
+    stepsSummary: "How we calculated this",
+    plainTitle: "In plain words",
+    aiTag: "AI-generated explanation",
+    verified: "All numbers checked against the calculator",
+    unverified: "The explanation could not be verified, so only the calculated results are shown.",
+    questionsTitle: "Questions to ask yourself",
+    moneyTitle: "What else could this money do?",
+    moneyText: extra => `The ${extra} extra you would pay for instalments could also become part of your emergency savings, a chance to learn something new, or support for something you care about: stray animals, education, the environment.`,
+    moneyText2: "There is no right or wrong purchase. What matters is that your spending matches what you truly value.",
+    disclaimer: "PauseBeforeBuy is educational decision support, not financial advice. Late fees, missed payments and changes in income are not modelled.",
+    assumptionsTitle: "Assumptions",
+    errRequired: "Please fill this in.",
+    errPositive: "Enter a number greater than 0.",
+    errNonNeg: "Enter 0 or a positive number.",
+    errMonths: "Enter a whole number of months from 1 to 60.",
+    errRate: "Enter a rate greater than 0.",
+    errNetwork: "Something went wrong. Please try again.",
+    months: v => `${v} ${v === 1 ? "month" : "months"}`,
+    unlimited: "no fixed costs"
+  },
+  zh: {
+    introTitle: "买东西，从来没有这么容易过。",
+    introText: "一键下单、不用现金、每月只要一点点。PauseBeforeBuy 在你付款之前给你一个暂停的时刻，看清这笔消费的真实代价。",
+    introStart: "开始我的暂停",
+    scene1Title: "凌晨一点的下单",
+    scene1Text: "夜深了，点一下就买好了。钱没有从手里离开，所以感觉不像在花钱。",
+    scene1Alt: "深夜里亮着的手机屏幕和立即购买按钮",
+    s1Button: "立即购买",
+    scene2Title: "每月只要一点点",
+    scene2Text: "价格被拆成每月一个小数字。总价、手续费和真实的年化成本，都藏在小字里。",
+    scene2Alt: "价签上只显示每月的小金额，下面是小字说明",
+    s2Big: "$50/月",
+    s2Small: "轻松分 12 期*",
+    scene3Title: "越叠越高的分期",
+    scene3Text: "手机、耳机、一次旅行。每个分期单独看都不重，叠在一起就占满了每个月。",
+    scene3Alt: "随着分期越来越多，每月的柱子越来越高",
+    s3Label: "每个月，又多一笔分期",
+    scene4Title: "没有缓冲了",
+    scene4Text: "储蓄见底的时候，一张意外账单就足以让你背上更多债务。",
+    scene4Alt: "快空了的存钱罐和一封飞来的账单",
+    s4Label: "意外账单",
+    factText: "在新加坡，获得认证的先买后付平台在核查你的收入之前，最多只允许你欠 2,000 新元。但这个上限是按单个平台计算的，没有人会把你在所有平台欠的钱加在一起。",
+    factSource: "来源：新加坡金融科技协会，《先买后付行为准则》（2022）。",
+    howTitle: "怎么用",
+    how1Title: "告诉我们你想买什么",
+    how1Text: "价格、分期期数和手续费。",
+    how2Title: "填写你的财务状况",
+    how2Text: "收入、储蓄和每月支出，只保存在你的设备上。",
+    how3Title: "暂停一下，再比较",
+    how3Text: "一次付清、分期付款和先存钱再买，并排比较，包括真实的年化成本。",
+    p1Title: "我们从不告诉你该买什么",
+    p1Text: "你看到的是利弊权衡，决定权始终在你手里。",
+    p2Title: "每个数字都来自计算器",
+    p2Text: "AI 只负责用大白话解释结果，它写出的每个数字都会被核对。",
+    p3Title: "你的数据只属于你",
+    p3Text: "不连接你的银行卡或任何支付应用。",
+    ctaTitle: "正在考虑买点什么？",
+    ctaText: "大约只需一分钟。你想买的东西，一分钟后也还在。",
+    heroTitle: "付款之前，先暂停一下。",
+    heroText: "看清这笔消费的真实代价：一次付清、分期付款，还是先存钱再买。",
+    stepOf: (a, b) => `第 ${a} 步，共 ${b} 步`,
+    step1Title: "你想买什么？",
+    itemLabel: "商品名称（选填）",
+    itemHint: "写个名字就好，比如“笔记本电脑”或“演唱会门票”。",
+    priceLabel: "价格",
+    monthsLabel: "分期期数",
+    monthsUnit: "个月",
+    feeTypeLabel: "这个分期方案怎么收费？",
+    feeNone: "不收额外费用",
+    feeNoneHint: "0% 分期，先买后付",
+    feeFlat: "每期收取手续费",
+    feeFlatHint: "信用卡分期常见，例如每期 0.6%",
+    feeApr: "按年利率计息",
+    feeAprHint: "个人贷款常见，例如年利率 12%",
+    rateFlat: "每期手续费率",
+    rateFlatUnit: "% / 月",
+    rateApr: "年利率",
+    rateAprUnit: "% / 年",
+    upfrontLabel: "一次性手续费（选填）",
+    upfrontHint: "只收一次的办理费或服务费。",
+    next: "下一步：你的财务状况",
+    trySample: "试试示例案例",
+    step2Title: "你的财务状况",
+    incomeLabel: "每月税后收入",
+    savingsLabel: "目前的现金储蓄",
+    essentialsLabel: "每月必要支出",
+    essentialsHint: "房租、饭钱、交通、账单。",
+    debtLabel: "每月已有的还款",
+    debtHint: "你已经在还的其他分期或贷款。",
+    advanced: "调整安全设置",
+    targetLabel: "应急资金目标",
+    targetHint: "新加坡金管局建议至少预留 3 到 6 个月的开支。",
+    dtiLabel: "还款警戒线",
+    dtiHint: "每月还款占收入的比例。",
+    privacy: "你填写的数字只保存在这台设备上，我们不会存储。",
+    clearData: "清除我的数据",
+    cleared: "已清除保存的数字。",
+    submit: "暂停一下，比较看看",
+    back: "返回",
+    pauseTitle: "深呼吸一下。这个决定值得你多想几秒。",
+    pauseWait: "正在核对数字……",
+    pauseWaking: "计算器正在启动，第一次请求可能需要等待一分钟左右。",
+    skip: "跳过",
+    edit: "修改我的数字",
+    demoNoBackend: "演示模式：这是 SGD 6,000 笔记本电脑的示例结果，不是根据你的数字计算的。连接计算器后，这里会显示你自己的结果。",
+    demoFailed: "演示模式：暂时无法连接计算器，这是 SGD 6,000 笔记本电脑的示例结果，不是根据你的数字计算的。请稍后再试。",
+    baseline: (s, r) => `你现在每月结余 ${s}，储蓄可以支撑 ${r}的必要开支。`,
+    seenCap: "分期方案写的是",
+    realCap: "实际一年的真实成本",
+    perInstalment: "每期",
+    perYear: "标称年利率",
+    zeroRate: "0% 分期",
+    plusFee: fee => `另加一次性手续费 ${fee}`,
+    effRate: "实际年化利率",
+    revealFoot: (extra, n, fee) => `${n} 个月下来，你要比原价多付 ${extra}。` + (fee ? `每月还款中有 ${fee} 是手续费。` : ""),
+    compareTitle: "三种选择",
+    opt: { pay_in_full: "一次付清", instalment: "分期付款", delay: "先存钱再买" },
+    risk: { low: "低风险", medium: "中风险", high: "高风险" },
+    notPossible: { pay_in_full: "以你目前的储蓄，无法一次付清。", instalment: "月供超过了你每月的结余。", delay: "你每月没有结余可以存。" },
+    f: {
+      totalPaid: "总共支付", extra: "额外成本", monthlyPay: "每月还款", feePart: "其中手续费",
+      savingsAfter: "购买后剩余储蓄", surplus: "每月结余", surplusDuring: "分期期间每月结余",
+      dti: "还款占收入比例", monthsToSave: "需要存钱的时间", savePerMonth: "每月存下",
+      notReachable: "无法存够"
+    },
+    runwayLabel: "储蓄可以支撑",
+    runwayTarget: t => `竖线是你的 ${t} 个月目标`,
+    flags: {
+      insufficient_savings: "储蓄不足", negative_monthly_cash_flow: "入不敷出",
+      below_emergency_target: "低于应急目标", high_debt_to_income: "还款占收入比例偏高",
+      severe_debt_to_income: "还款占收入比例过高", extra_borrowing_cost: "借钱有额外成本",
+      cannot_save_up: "无法存够"
+    },
+    stepsSummary: "这些数字是怎么算的",
+    plainTitle: "用大白话说",
+    aiTag: "AI 生成的解释",
+    verified: "所有数字已与计算器核对",
+    unverified: "这段解释未能通过核对，因此只显示计算结果。",
+    questionsTitle: "问问自己",
+    moneyTitle: "这笔钱还能做什么？",
+    moneyText: extra => `分期要多付的 ${extra}，也可以变成你的应急储蓄、一次学习新东西的机会，或者对你在乎的事情的一点支持：流浪动物、教育公益、环境保护。`,
+    moneyText2: "消费没有对错，重要的是它符合你真正在乎的东西。",
+    disclaimer: "PauseBeforeBuy 是教育性质的决策辅助工具，不构成财务建议。逾期费用、漏还款项和收入变化均未计入。",
+    assumptionsTitle: "计算假设",
+    errRequired: "请填写这一项。",
+    errPositive: "请输入大于 0 的数字。",
+    errNonNeg: "请输入 0 或正数。",
+    errMonths: "请输入 1 到 60 之间的整数。",
+    errRate: "请输入大于 0 的费率。",
+    errNetwork: "出了点问题，请重试。",
+    months: v => `${v} 个月`,
+    unlimited: "没有固定开支"
+  }
+};
+
+/* Chinese labels for the back end's calculation steps and assumptions */
+const STEP_ZH = {
+  "Monthly fixed outflow": "每月固定支出",
+  "Monthly surplus before purchase": "购买前每月结余",
+  "Emergency runway today": "目前应急资金可支撑月数",
+  "Savings left after paying in full": "一次付清后剩余储蓄",
+  "Emergency runway after paying in full": "一次付清后应急资金可支撑月数",
+  "Monthly instalment (flat fee on original price)": "每月还款（按原价收取每期手续费）",
+  "Monthly instalment (amortised interest)": "每月还款（等额本息）",
+  "Total repaid": "总还款额",
+  "Extra cost of borrowing": "借钱的额外成本",
+  "Effective annual rate (what the fees really cost)": "实际年化利率（手续费的真实成本）",
+  "Monthly surplus during instalment": "分期期间每月结余",
+  "Debt-to-income ratio": "还款占收入比例",
+  "Emergency runway during instalment": "分期期间应急资金可支撑月数",
+  "Months needed to save up": "需要存钱的月数"
+};
+const ASSUMPTION_ZH = {
+  "Delay option saves only from the monthly surplus and leaves current savings untouched.": "“先存钱再买”只用每月结余存钱，现有储蓄保持不动。",
+  "Emergency runway = savings divided by fixed monthly outflow (essentials + debt payments).": "应急资金可支撑月数 = 储蓄 ÷ 每月固定支出（必要支出 + 已有还款）。",
+  "No late fees, missed payments or income changes are modelled.": "未计入逾期费用、漏还款项或收入变化。"
+};
+
+/* ---------------- demo response (real back-end output for the sample case) ---------------- */
+const DEMO = {"English": {"calc": {"ok": true, "currency": "SGD", "inputs": {"monthly_income": 3500, "cash_savings": 5000, "essential_expenses": 2200, "existing_debt_payments": 300, "monthly_saving_capacity": null, "price": 6000, "instalment_months": 12, "monthly_fee_rate": 0.006, "annual_interest_rate": 0.0, "upfront_fee": 0.0, "item_name": "Laptop"}, "settings": {"emergency_target_months": 3.0, "max_debt_to_income": 0.35, "severe_debt_to_income": 0.55, "currency": "SGD"}, "baseline": {"monthly_fixed_outflow": 2500, "monthly_surplus": 1000, "emergency_runway_months": 2.0}, "options": {"pay_in_full": {"feasible": false, "total_paid": 6000, "cost_of_credit": 0.0, "monthly_payment": 0.0, "savings_after_purchase": -1000, "monthly_surplus_after": 1000, "emergency_runway_months": 0.0, "debt_to_income": 0.0857, "risk_flags": ["insufficient_savings", "below_emergency_target"], "risk_level": "high"}, "instalment": {"feasible": true, "total_paid": 6432.0, "cost_of_credit": 432.0, "monthly_payment": 536.0, "monthly_fee_amount": 36.0, "instalment_months": 12, "effective_annual_rate": 0.1384, "savings_after_purchase": 5000.0, "monthly_surplus_after": 464.0, "emergency_runway_months": 1.65, "debt_to_income": 0.2389, "risk_flags": ["below_emergency_target", "extra_borrowing_cost"], "risk_level": "medium"}, "delay": {"feasible": true, "total_paid": 6000, "cost_of_credit": 0.0, "monthly_payment": 0.0, "monthly_saving_capacity": 1000, "months_to_save": 6, "savings_after_purchase": 5000, "monthly_surplus_after": 1000, "emergency_runway_months": 2.0, "debt_to_income": 0.0857, "risk_flags": ["below_emergency_target"], "risk_level": "medium"}}, "steps": [{"option": "baseline", "label": "Monthly fixed outflow", "formula": "essential expenses + existing debt payments", "substitution": "2,200.00 + 300.00", "result": "SGD 2,500.00"}, {"option": "baseline", "label": "Monthly surplus before purchase", "formula": "income - monthly fixed outflow", "substitution": "3,500.00 - 2,500.00", "result": "SGD 1,000.00"}, {"option": "baseline", "label": "Emergency runway today", "formula": "cash savings / monthly fixed outflow", "substitution": "5,000.00 / 2,500.00", "result": "2.00 months"}, {"option": "pay_in_full", "label": "Savings left after paying in full", "formula": "cash savings - price", "substitution": "5,000.00 - 6,000.00", "result": "SGD -1,000.00"}, {"option": "pay_in_full", "label": "Emergency runway after paying in full", "formula": "max(savings left, 0) / monthly fixed outflow", "substitution": "0.00 / 2,500.00", "result": "0.00 months"}, {"option": "instalment", "label": "Monthly instalment (flat fee on original price)", "formula": "price / n + price × monthly fee rate", "substitution": "6,000.00 / 12 + 6,000.00 × 0.006", "result": "500.00 + 36.00 = SGD 536.00"}, {"option": "instalment", "label": "Total repaid", "formula": "monthly instalment × n + upfront fee", "substitution": "536.00 × 12 + 0.00", "result": "SGD 6,432.00"}, {"option": "instalment", "label": "Extra cost of borrowing", "formula": "total repaid - price", "substitution": "6,432.00 - 6,000.00", "result": "SGD 432.00"}, {"option": "instalment", "label": "Effective annual rate (what the fees really cost)", "formula": "solve r: price - upfront fee = Σ instalment / (1+r)^t; EAR = (1+r)^12 - 1", "substitution": "6,000.00 = Σ 536.00 / (1+r)^t, t = 1..12", "result": "monthly r = 1.09%, EAR = 13.84%"}, {"option": "instalment", "label": "Monthly surplus during instalment", "formula": "monthly surplus before purchase - monthly instalment", "substitution": "1,000.00 - 536.00", "result": "SGD 464.00"}, {"option": "instalment", "label": "Debt-to-income ratio", "formula": "(existing debt payments + instalment) / income", "substitution": "(300.00 + 536.00) / 3,500.00", "result": "23.89%"}, {"option": "instalment", "label": "Emergency runway during instalment", "formula": "(cash savings - upfront fee) / (monthly fixed outflow + instalment)", "substitution": "5,000.00 / 3,036.00", "result": "1.65 months"}, {"option": "delay", "label": "Months needed to save up", "formula": "ceil(price / monthly saving capacity)", "substitution": "ceil(6,000.00 / 1,000.00)", "result": "6 months"}], "assumptions": ["Delay option saves only from the monthly surplus and leaves current savings untouched.", "Emergency runway = savings divided by fixed monthly outflow (essentials + debt payments).", "No late fees, missed payments or income changes are modelled."]}, "checks": {"ok": true, "schema_problems": [], "unverified_numbers": []}, "usage": {"input_tokens": 1217, "output_tokens": 646}, "cost_usd": 0.004447, "explanation": {"overview": "Paying in full would drain your savings and leave you with no emergency buffer, so it's not possible right now. The instalment option lets you keep your savings intact but costs SGD 432 extra and cuts your monthly cushion in half. Delaying the purchase by 6 months lets you save up and buy it outright without any extra cost or monthly strain.", "options": [{"option": "pay_in_full", "plain_explanation": "You cannot afford this option with your current savings. Paying SGD 6000 now would leave you SGD 1000 short, with zero emergency savings left. You'd have no buffer if something unexpected happened.", "main_risk": "High: insufficient savings and no emergency fund. You would be financially exposed immediately."}, {"option": "instalment", "plain_explanation": "You can afford this. You'd pay SGD 536 every month for 12 months, totalling SGD 6432. The extra SGD 432 you pay is the cost of borrowing; the effective annual rate is 13.84%, which means the small monthly fee of SGD 36 adds up to a much steeper yearly cost. You keep your SGD 5000 savings, but your monthly cushion shrinks from SGD 1000 to SGD 464. Your emergency runway drops to 1.65 months—below the recommended 3 months.", "main_risk": "Medium: you'd be below your emergency target and paying a significant borrowing cost. If income drops or an expense spikes, you'd struggle to cover the monthly payment."}, {"option": "delay", "plain_explanation": "You can afford this. By saving SGD 1000 per month from your surplus, you'll have enough to buy the item outright in 6 months with no extra cost. You keep your full SGD 5000 emergency savings throughout, and your monthly surplus stays at SGD 1000. After the purchase, you'll still have SGD 5000 saved.", "main_risk": "Medium: you remain slightly below the 3-month emergency target, but you avoid all borrowing costs and keep your finances stable. The main trade-off is waiting 6 months."}], "questions_to_ask_yourself": ["Do I need this item now, or can I wait 6 months? Delaying costs nothing extra and keeps me financially safer.", "If I choose instalments, can I handle a SGD 536 monthly payment if my income drops or an unexpected bill arrives?", "How important is it to me to keep a full 3-month emergency fund versus stretching my budget?"]}}, "Chinese": {"calc": {"ok": true, "currency": "SGD", "inputs": {"monthly_income": 3500, "cash_savings": 5000, "essential_expenses": 2200, "existing_debt_payments": 300, "monthly_saving_capacity": null, "price": 6000, "instalment_months": 12, "monthly_fee_rate": 0.006, "annual_interest_rate": 0.0, "upfront_fee": 0.0, "item_name": "Laptop"}, "settings": {"emergency_target_months": 3.0, "max_debt_to_income": 0.35, "severe_debt_to_income": 0.55, "currency": "SGD"}, "baseline": {"monthly_fixed_outflow": 2500, "monthly_surplus": 1000, "emergency_runway_months": 2.0}, "options": {"pay_in_full": {"feasible": false, "total_paid": 6000, "cost_of_credit": 0.0, "monthly_payment": 0.0, "savings_after_purchase": -1000, "monthly_surplus_after": 1000, "emergency_runway_months": 0.0, "debt_to_income": 0.0857, "risk_flags": ["insufficient_savings", "below_emergency_target"], "risk_level": "high"}, "instalment": {"feasible": true, "total_paid": 6432.0, "cost_of_credit": 432.0, "monthly_payment": 536.0, "monthly_fee_amount": 36.0, "instalment_months": 12, "effective_annual_rate": 0.1384, "savings_after_purchase": 5000.0, "monthly_surplus_after": 464.0, "emergency_runway_months": 1.65, "debt_to_income": 0.2389, "risk_flags": ["below_emergency_target", "extra_borrowing_cost"], "risk_level": "medium"}, "delay": {"feasible": true, "total_paid": 6000, "cost_of_credit": 0.0, "monthly_payment": 0.0, "monthly_saving_capacity": 1000, "months_to_save": 6, "savings_after_purchase": 5000, "monthly_surplus_after": 1000, "emergency_runway_months": 2.0, "debt_to_income": 0.0857, "risk_flags": ["below_emergency_target"], "risk_level": "medium"}}, "steps": [{"option": "baseline", "label": "Monthly fixed outflow", "formula": "essential expenses + existing debt payments", "substitution": "2,200.00 + 300.00", "result": "SGD 2,500.00"}, {"option": "baseline", "label": "Monthly surplus before purchase", "formula": "income - monthly fixed outflow", "substitution": "3,500.00 - 2,500.00", "result": "SGD 1,000.00"}, {"option": "baseline", "label": "Emergency runway today", "formula": "cash savings / monthly fixed outflow", "substitution": "5,000.00 / 2,500.00", "result": "2.00 months"}, {"option": "pay_in_full", "label": "Savings left after paying in full", "formula": "cash savings - price", "substitution": "5,000.00 - 6,000.00", "result": "SGD -1,000.00"}, {"option": "pay_in_full", "label": "Emergency runway after paying in full", "formula": "max(savings left, 0) / monthly fixed outflow", "substitution": "0.00 / 2,500.00", "result": "0.00 months"}, {"option": "instalment", "label": "Monthly instalment (flat fee on original price)", "formula": "price / n + price × monthly fee rate", "substitution": "6,000.00 / 12 + 6,000.00 × 0.006", "result": "500.00 + 36.00 = SGD 536.00"}, {"option": "instalment", "label": "Total repaid", "formula": "monthly instalment × n + upfront fee", "substitution": "536.00 × 12 + 0.00", "result": "SGD 6,432.00"}, {"option": "instalment", "label": "Extra cost of borrowing", "formula": "total repaid - price", "substitution": "6,432.00 - 6,000.00", "result": "SGD 432.00"}, {"option": "instalment", "label": "Effective annual rate (what the fees really cost)", "formula": "solve r: price - upfront fee = Σ instalment / (1+r)^t; EAR = (1+r)^12 - 1", "substitution": "6,000.00 = Σ 536.00 / (1+r)^t, t = 1..12", "result": "monthly r = 1.09%, EAR = 13.84%"}, {"option": "instalment", "label": "Monthly surplus during instalment", "formula": "monthly surplus before purchase - monthly instalment", "substitution": "1,000.00 - 536.00", "result": "SGD 464.00"}, {"option": "instalment", "label": "Debt-to-income ratio", "formula": "(existing debt payments + instalment) / income", "substitution": "(300.00 + 536.00) / 3,500.00", "result": "23.89%"}, {"option": "instalment", "label": "Emergency runway during instalment", "formula": "(cash savings - upfront fee) / (monthly fixed outflow + instalment)", "substitution": "5,000.00 / 3,036.00", "result": "1.65 months"}, {"option": "delay", "label": "Months needed to save up", "formula": "ceil(price / monthly saving capacity)", "substitution": "ceil(6,000.00 / 1,000.00)", "result": "6 months"}], "assumptions": ["Delay option saves only from the monthly surplus and leaves current savings untouched.", "Emergency runway = savings divided by fixed monthly outflow (essentials + debt payments).", "No late fees, missed payments or income changes are modelled."]}, "checks": {"ok": true, "schema_problems": [], "unverified_numbers": []}, "usage": {"input_tokens": 1217, "output_tokens": 646}, "cost_usd": 0.004447, "explanation": {"overview": "全款付款会耗尽你的储蓄，让你没有任何应急缓冲，所以目前不可行。分期可以保留你的储蓄，但要多付 SGD 432，每月的结余也会减少一半左右。推迟 6 个月购买，可以先攒够钱再一次性买下，没有额外成本，也没有每月还款压力。", "options": [{"option": "pay_in_full", "plain_explanation": "以你目前的储蓄，负担不起这个方案。现在支付 SGD 6000 会让你还差 SGD 1000，应急储蓄将归零。一旦发生意外，你将没有任何缓冲。", "main_risk": "高：储蓄不足，没有应急资金。你会立刻处于财务上的弱势。"}, {"option": "instalment", "plain_explanation": "你负担得起这个方案。你每月需要还 SGD 536，共 12 个月，总计 SGD 6432。多付的 SGD 432 就是借钱的成本；实际年化利率是 13.84%，也就是说，每月 SGD 36 这笔看起来不多的手续费，折算成一年的真实成本要高得多。你可以保住 SGD 5000 的储蓄，但每月结余会从 SGD 1000 降到 SGD 464。你的应急资金只能支撑 1.65 个月，低于建议的 3 个月。", "main_risk": "中：你的应急资金会低于目标，还要支付不少借贷成本。如果收入下降或出现突发开支，你可能难以按时还款。"}, {"option": "delay", "plain_explanation": "你负担得起这个方案。每月从结余中存下 SGD 1000，6 个月后就能一次性买下，没有额外成本。整个过程中，SGD 5000 的应急储蓄完全不动，每月结余也保持在 SGD 1000。买完之后，你仍然有 SGD 5000 的存款。", "main_risk": "中：你的应急资金仍略低于 3 个月的目标，但可以避免所有借贷成本，财务状况保持稳定。主要的代价是要等 6 个月。"}], "questions_to_ask_yourself": ["我是现在就需要它，还是可以等 6 个月？推迟购买没有额外成本，也让我在财务上更安全。", "如果选择分期，万一收入下降或遇到突发账单，我还能按时还 SGD 536 的月供吗？", "对我来说，保留完整的 3 个月应急资金，和把预算撑得更紧，哪个更重要？"]}}};
+const SAMPLE = {
+  item: { en: "Laptop", zh: "笔记本电脑" }, price: 6000, months: 12, feeType: "flat", rate: 0.6, upfront: 0,
+  income: 3500, savings: 5000, essentials: 2200, debt: 300
+};
+
+/* ---------------- state & storage ---------------- */
+let lang = "en";
+let step = 1;
+let lastResponse = null;
+let lastIsDemo = null;
+const $ = id => document.getElementById(id);
+const store = {
+  get(k) { try { const v = localStorage.getItem("pbb:" + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("pbb:" + k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem("pbb:" + k); } catch (e) {} }
+};
+const t = () => T[lang];
+
+function el(tag, attrs = {}, ...children) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else n.setAttribute(k, v);
+  }
+  for (const c of children.flat()) { if (c == null) continue; n.append(c instanceof Node ? c : document.createTextNode(c)); }
+  return n;
+}
+
+/* ---------------- formatting only (no financial calculation) ---------------- */
+function money(v) {
+  if (v === null || v === undefined) return "—";
+  const abs = Math.abs(v);
+  const s = abs.toLocaleString("en-SG", { minimumFractionDigits: Number.isInteger(abs) ? 0 : 2, maximumFractionDigits: 2 });
+  return (v < 0 ? "−" : "") + "SGD " + s;
+}
+const trim = v => String(Number(Number(v).toFixed(2)));
+const pctFromDecimal = (d, digits = 2) => (Number(d) * 100).toFixed(digits) + "%";
+const pctInput = d => String(Number((Number(d) * 100).toFixed(4))) + "%";
+function monthsText(v) { return v === null || v === undefined ? t().unlimited : t().months(trim(v)); }
+
+/* ---------------- language ---------------- */
+function applyLang() {
+  document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(n => {
+    const v = t()[n.dataset.i18n];
+    if (typeof v === "string") n.textContent = v;
+  });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  updateRateField();
+  updateProgress();
+  if (!$("results-view").hidden && lastResponse) {
+    if (lastIsDemo) { lastResponse = DEMO[apiLang()]; render(lastResponse, lastIsDemo); }
+    else refetchForLanguage();
+  }
+}
+const apiLang = () => (lang === "zh" ? "Chinese" : "English");
+
+function updateProgress() {
+  $("step-count").textContent = t().stepOf(step, 2);
+  $("progress-bar").style.width = step === 1 ? "50%" : "100%";
+}
+function feeType() { return document.querySelector("input[name=feeType]:checked").value; }
+function updateRateField() {
+  const ft = feeType();
+  $("rate-field").hidden = ft === "none";
+  $("rate-label").textContent = ft === "apr" ? t().rateApr : t().rateFlat;
+  $("rate-unit").textContent = ft === "apr" ? t().rateAprUnit : t().rateFlatUnit;
+  $("rate").placeholder = ft === "apr" ? "12" : "0.6";
+}
+
+/* ---------------- validation ---------------- */
+const FIELD_IDS = ["price", "months", "rate", "upfront", "income", "savings", "essentials", "debt", "target", "dti"];
+function setError(id, msg) {
+  const box = $("err-" + id); if (box) box.textContent = msg || "";
+  const input = $(id); if (input) input.closest(".input-wrap").classList.toggle("invalid", !!msg);
+  if (input) input.setAttribute("aria-invalid", msg ? "true" : "false");
+}
+function clearErrors() { FIELD_IDS.forEach(id => setError(id, "")); $("err-form").textContent = ""; }
+function num(id) { const raw = $(id).value.trim().replace(/,/g, ""); return raw === "" ? null : Number(raw); }
+
+function validateStep1() {
+  let ok = true;
+  const price = num("price"), months = num("months"), up = num("upfront"), rate = num("rate");
+  if (price === null) { setError("price", t().errRequired); ok = false; }
+  else if (!(price > 0)) { setError("price", t().errPositive); ok = false; } else setError("price", "");
+  if (months === null || !Number.isInteger(months) || months < 1 || months > 60) { setError("months", t().errMonths); ok = false; } else setError("months", "");
+  if (up !== null && !(up >= 0)) { setError("upfront", t().errNonNeg); ok = false; } else setError("upfront", "");
+  if (feeType() !== "none") {
+    if (rate === null) { setError("rate", t().errRequired); ok = false; }
+    else if (!(rate > 0)) { setError("rate", t().errRate); ok = false; } else setError("rate", "");
+  } else setError("rate", "");
+  return ok;
+}
+function validateStep2() {
+  let ok = true;
+  const income = num("income");
+  if (income === null) { setError("income", t().errRequired); ok = false; }
+  else if (!(income > 0)) { setError("income", t().errPositive); ok = false; } else setError("income", "");
+  for (const id of ["savings", "essentials"]) {
+    const v = num(id);
+    if (v === null) { setError(id, t().errRequired); ok = false; }
+    else if (!(v >= 0)) { setError(id, t().errNonNeg); ok = false; } else setError(id, "");
+  }
+  const debt = num("debt");
+  if (debt !== null && !(debt >= 0)) { setError("debt", t().errNonNeg); ok = false; } else setError("debt", "");
+  for (const id of ["target", "dti"]) {
+    const v = num(id);
+    if (v === null || !(v > 0)) { setError(id, t().errPositive); ok = false; $(id).closest("details").open = true; } else setError(id, "");
+  }
+  if (!ok) { const bad = document.querySelector("#step2 [aria-invalid=true]"); if (bad) bad.focus(); }
+  return ok;
+}
+
+function buildRequest() {
+  const ft = feeType(), rate = num("rate") || 0;
+  return {
+    profile: {
+      monthly_income: num("income"), cash_savings: num("savings"),
+      essential_expenses: num("essentials"), existing_debt_payments: num("debt") || 0
+    },
+    purchase: {
+      item_name: $("item").value.trim().slice(0, 40),
+      price: num("price"), instalment_months: num("months"),
+      monthly_fee_rate: ft === "flat" ? rate / 100 : 0,      // unit conversion only: 0.6% -> 0.006
+      annual_interest_rate: ft === "apr" ? rate / 100 : 0,   // 12% -> 0.12
+      upfront_fee: num("upfront") || 0
+    },
+    settings: { emergency_target_months: num("target"), max_debt_to_income: num("dti") / 100, currency: "SGD" },
+    language: apiLang()
+  };
+}
+
+/* ---------------- saving the user's own numbers on this device ---------------- */
+function saveFinances() {
+  store.set("finances", { income: $("income").value, savings: $("savings").value, essentials: $("essentials").value,
+    debt: $("debt").value, target: $("target").value, dti: $("dti").value });
+}
+function loadFinances() {
+  const f = store.get("finances"); if (!f) return;
+  for (const k of ["income", "savings", "essentials", "debt", "target", "dti"]) if (f[k] != null && f[k] !== "") $(k).value = f[k];
+}
+
+/* ---------------- API ---------------- */
+let lastRequest = null;
+async function callApi(req) {
+  if (!API_BASE_URL) return { data: DEMO[req.language], demo: "noBackend" };
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 75000);   // free hosting can take up to a minute to wake up
+  try {
+    const res = await fetch(API_BASE_URL.replace(/\/$/, "") + "/simulate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req), signal: ctrl.signal
+    });
+    const data = await res.json();
+    if (data && data.calc) return { data, demo: null };
+    if (data && data.detail) return { apiError: data.detail };
+    return { data: DEMO[req.language], demo: "failed" };
+  } catch (e) {
+    return { data: DEMO[req.language], demo: "failed" };
+  } finally { clearTimeout(timer); }
+}
+
+const ERROR_FIELDS = [
+  ["monthly_income", "income"], ["cash_savings", "savings"], ["essential_expenses", "essentials"],
+  ["existing_debt_payments", "debt"], ["instalment_months", "months"], ["price", "price"],
+  ["fee", "rate"], ["interest", "rate"]
+];
+function showApiErrors(errors) {
+  let firstStep = 2;
+  for (const msg of errors) {
+    const hit = ERROR_FIELDS.find(([key]) => msg.toLowerCase().includes(key));
+    if (hit) { setError(hit[1], msg); if (["months", "price", "rate", "upfront"].includes(hit[1])) firstStep = 1; }
+    else $("err-form").textContent = msg;
+  }
+  goStep(firstStep);
+}
+
+/* ---------------- flow ---------------- */
+function goStep(n) {
+  step = n;
+  $("step1").hidden = n !== 1;
+  $("step2").hidden = n !== 2;
+  updateProgress();
+  const first = n === 1 ? $("item") : $("income");
+  first.focus({ preventScroll: true });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function runPause(promise) {
+  const pause = $("pause");
+  pause.classList.add("show");
+  $("pause-status").textContent = "";
+  $("skip").focus();
+  let skipped = false;
+  const skip = new Promise(res => { $("skip").onclick = () => { skipped = true; res(); }; });
+  const wait = new Promise(res => setTimeout(res, PAUSE_MS));
+  const tick = setTimeout(() => { $("pause-status").textContent = t().pauseWait; }, PAUSE_MS);
+  await Promise.race([wait, skip]);
+  if (skipped) $("pause-status").textContent = t().pauseWait;
+  const waking = setTimeout(() => { $("pause-status").textContent = t().pauseWaking; }, 12000);
+  const result = await promise;
+  clearTimeout(tick); clearTimeout(waking);
+  pause.classList.remove("show");
+  return result;
+}
+
+async function submit() {
+  clearErrors();
+  if (!validateStep1()) { goStep(1); return; }
+  if (!validateStep2()) return;
+  saveFinances();
+  lastRequest = buildRequest();
+  const result = await runPause(callApi(lastRequest));
+  handleResult(result);
+}
+
+function handleResult(result) {
+  if (result.apiError) { $("err-form").textContent = typeof result.apiError === "string" ? result.apiError : t().errNetwork; return; }
+  const { data, demo } = result;
+  if (data.calc && data.calc.ok === false) { showApiErrors(data.calc.errors || []); return; }
+  lastResponse = data; lastIsDemo = demo;
+  render(data, demo);
+}
+
+async function refetchForLanguage() {
+  if (!lastRequest) return;
+  lastRequest.language = apiLang();
+  $("headline").textContent = t().pauseWait;
+  const result = await callApi(lastRequest);
+  handleResult(result);
+}
+
+/* ---------------- rendering ---------------- */
+function render(data, demo) {
+  const L = t(), calc = data.calc, o = calc.options, inst = o.instalment;
+  showView("results");
+
+  const banner = $("demo-banner");
+  banner.hidden = !demo;
+  if (demo) banner.textContent = demo === "failed" ? L.demoFailed : L.demoNoBackend;
+
+  const exp = data.explanation;
+  const verified = data.checks && data.checks.ok && exp;
+  $("headline").textContent = verified ? exp.overview : "";
+  $("headline").hidden = !verified;
+  $("baseline").textContent = L.baseline(money(calc.baseline.monthly_surplus), monthsText(calc.baseline.emergency_runway_months));
+
+  renderReveal(calc, inst);
+  renderCompare(calc);
+  renderPlain(data, verified);
+
+  const qs = $("questions"); qs.replaceChildren();
+  (verified ? exp.questions_to_ask_yourself : []).forEach(q => qs.append(el("li", { text: q })));
+  qs.closest(".questions").hidden = !verified;
+
+  const card = $("money-card");
+  card.hidden = !(inst.cost_of_credit > 0);
+  if (!card.hidden) card.replaceChildren(
+    el("h3", { text: L.moneyTitle }), el("p", { text: L.moneyText(money(inst.cost_of_credit)) }), el("p", { text: L.moneyText2 })
+  );
+
+  const as = $("assumptions"); as.replaceChildren();
+  (calc.assumptions || []).forEach(a => as.append(el("li", { text: lang === "zh" ? (ASSUMPTION_ZH[a] || a) : a })));
+
+  window.scrollTo({ top: 0 });
+  (verified ? $("headline") : $("baseline")).focus?.({ preventScroll: true });
+}
+
+function renderReveal(calc, inst) {
+  const L = t(), box = $("reveal"), inp = calc.inputs;
+  box.hidden = !(inst.cost_of_credit > 0);
+  if (box.hidden) return;
+  let seenBig, seenUnit;
+  if (inp.monthly_fee_rate > 0) { seenBig = pctInput(inp.monthly_fee_rate); seenUnit = L.perInstalment; }
+  else if (inp.annual_interest_rate > 0) { seenBig = pctInput(inp.annual_interest_rate); seenUnit = L.perYear; }
+  else { seenBig = "0%"; seenUnit = inp.upfront_fee > 0 ? L.plusFee(money(inp.upfront_fee)) : L.zeroRate; }
+  const fee = inst.monthly_fee_amount > 0 ? money(inst.monthly_fee_amount) : null;
+  box.replaceChildren(
+    el("div", { class: "reveal-side seen" }, el("p", { class: "cap", text: L.seenCap }), el("p", { class: "big", text: seenBig }), el("p", { class: "unit", text: seenUnit })),
+    el("div", { class: "reveal-side real" }, el("p", { class: "cap", text: L.realCap }), el("p", { class: "big", text: pctFromDecimal(inst.effective_annual_rate) }), el("p", { class: "unit", text: L.effRate })),
+    el("p", { class: "reveal-foot", text: L.revealFoot(money(inst.cost_of_credit), inst.instalment_months, fee) })
+  );
+}
+
+function figure(dt, dd) { return el("div", {}, el("dt", { text: dt }), el("dd", { text: dd })); }
+
+function runwayBar(value, target, scaleMax) {
+  const L = t();
+  const w = value == null ? 100 : Math.min(value / scaleMax, 1) * 100;   // display scaling only
+  const pos = Math.min(target / scaleMax, 1) * 100;
+  const track = el("div", { class: "runway-track", role: "img", "aria-label": `${L.runwayLabel} ${monthsText(value)}` },
+    el("div", { class: "runway-fill", style: `width:${w}%` }), el("div", { class: "runway-target", style: `left:calc(${pos}% - 1px)` }));
+  return el("div", { class: "runway" },
+    el("div", { class: "runway-label" }, el("span", { text: L.runwayLabel }), el("strong", { text: monthsText(value) })),
+    track, el("div", { class: "runway-note", text: L.runwayTarget(trim(target)) }));
+}
+
+function renderCompare(calc) {
+  const L = t(), o = calc.options, target = calc.settings.emergency_target_months;
+  const runways = Object.values(o).map(x => x.emergency_runway_months).filter(v => v != null);
+  const scaleMax = Math.min(Math.max(target * 2, ...runways), target * 4);
+  const box = $("compare"); box.replaceChildren();
+  for (const key of ["pay_in_full", "instalment", "delay"]) {
+    const x = o[key];
+    const level = x.risk_level;
+    const dots = el("span", { class: "dots", "aria-hidden": "true" },
+      ...[1, 2, 3].map(i => el("i", { class: i <= ({ low: 1, medium: 2, high: 3 }[level]) ? "on" : "" })));
+    const figs = el("dl", { class: "figures" });
+    if (key === "pay_in_full") {
+      figs.append(figure(L.f.totalPaid, money(x.total_paid)), figure(L.f.extra, money(x.cost_of_credit)),
+        figure(L.f.savingsAfter, money(x.savings_after_purchase)), figure(L.f.surplus, money(x.monthly_surplus_after)));
+    } else if (key === "instalment") {
+      figs.append(figure(L.f.monthlyPay, `${money(x.monthly_payment)} × ${x.instalment_months}`));
+      if (x.monthly_fee_amount > 0) figs.append(figure(L.f.feePart, money(x.monthly_fee_amount)));
+      figs.append(figure(L.f.totalPaid, money(x.total_paid)), figure(L.f.extra, money(x.cost_of_credit)),
+        figure(L.f.surplusDuring, money(x.monthly_surplus_after)), figure(L.f.dti, pctFromDecimal(x.debt_to_income, 1)));
+    } else {
+      figs.append(figure(L.f.monthsToSave, x.months_to_save == null ? L.f.notReachable : L.months(x.months_to_save)),
+        figure(L.f.savePerMonth, money(x.monthly_saving_capacity)), figure(L.f.totalPaid, money(x.total_paid)),
+        figure(L.f.savingsAfter, money(x.savings_after_purchase)));
+    }
+    const flags = el("ul", { class: "flags", "aria-label": "Risk flags" },
+      ...(x.risk_flags || []).map(f => el("li", { text: L.flags[f] || f })));
+    const steps = calc.steps.filter(s => s.option === key);
+    const stepList = el("ol", {}, ...steps.map(s => el("li", {},
+      el("strong", { text: lang === "zh" ? (STEP_ZH[s.label] || s.label) : s.label }),
+      el("span", { class: "formula", text: s.formula }),
+      el("span", { class: "formula", text: s.substitution }),
+      el("span", { class: "result", text: "= " + (lang === "zh" ? s.result.replace(/ months?$/, " 个月") : s.result) }))));
+    box.append(el("article", { class: "option", "aria-labelledby": "h-" + key },
+      el("h3", { id: "h-" + key, text: L.opt[key] }),
+      el("div", { class: "risk" }, dots, el("span", { text: L.risk[level] })),
+      x.feasible ? null : el("p", { class: "not-possible", text: L.notPossible[key] }),
+      figs,
+      runwayBar(x.emergency_runway_months, target, scaleMax),
+      (x.risk_flags || []).length ? flags : null,
+      el("details", { class: "steps" }, el("summary", { text: L.stepsSummary }), stepList)
+    ));
+  }
+}
+
+function renderPlain(data, verified) {
+  const L = t(), box = $("plain");
+  const head = el("div", { class: "plain-head" },
+    el("h2", { class: "section-title", text: L.plainTitle }),
+    el("span", { class: "tag", text: L.aiTag }));
+  if (!verified) { box.replaceChildren(head, el("p", { class: "unverified", text: L.unverified })); return; }
+  head.append(el("span", { class: "verified" }, el("span", { "aria-hidden": "true", text: "✓" }), L.verified));
+  const items = data.explanation.options.map(x => el("div", { class: "plain-item" },
+    el("h4", { text: L.opt[x.option] || x.option }), el("p", { text: x.plain_explanation }), el("p", { class: "main-risk", text: x.main_risk })));
+  box.replaceChildren(head, ...items);
+}
+
+/* ---------------- views ---------------- */
+function showView(name) {
+  for (const v of ["intro", "form", "results"]) $(v + "-view").hidden = v !== name;
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------------- sample & wiring ---------------- */
+function fillSample() {
+  $("item").value = SAMPLE.item[lang]; $("price").value = SAMPLE.price; $("months").value = SAMPLE.months;
+  document.querySelector(`input[name=feeType][value=${SAMPLE.feeType}]`).checked = true; updateRateField();
+  $("rate").value = SAMPLE.rate; $("upfront").value = "";
+  $("income").value = SAMPLE.income; $("savings").value = SAMPLE.savings; $("essentials").value = SAMPLE.essentials; $("debt").value = SAMPLE.debt;
+  clearErrors();
+}
+
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  lang = b.dataset.lang; store.set("lang", lang); applyLang();
+}));
+document.querySelectorAll("input[name=feeType]").forEach(r => r.addEventListener("change", updateRateField));
+$("to-step2").addEventListener("click", () => { if (validateStep1()) goStep(2); });
+$("back").addEventListener("click", () => goStep(1));
+$("sample").addEventListener("click", fillSample);
+$("submit-btn").addEventListener("click", submit);
+/* Enter moves forward: next step on step 1, compare on step 2 */
+$("form").addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.target.tagName !== "INPUT" || e.target.type === "radio") return;
+  e.preventDefault();
+  if (step === 1) $("to-step2").click(); else submit();
+});
+$("edit").addEventListener("click", () => { showView("form"); goStep(1); });
+$("home-link").addEventListener("click", e => { e.preventDefault(); showView("intro"); });
+document.querySelectorAll("[data-start]").forEach(b => b.addEventListener("click", () => { showView("form"); goStep(1); }));
+$("clear-data").addEventListener("click", () => {
+  store.del("finances");
+  for (const k of ["income", "savings", "essentials", "debt"]) $(k).value = "";
+  $("target").value = 3; $("dti").value = 35;
+  $("err-form").textContent = t().cleared;
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("pause").classList.contains("show")) $("skip").click(); });
+
+lang = store.get("lang") || ((navigator.language || "").startsWith("zh") ? "zh" : "en");
+loadFinances();
+applyLang();
+</script>
+</body>
+</html>
