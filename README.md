@@ -1,19 +1,39 @@
 # PauseBeforeBuy
 
-Decision support for young adults who are about to buy something in instalments. It compares three options, **pay in full**, **pay in instalments** and **wait and save**, and shows what each one does to total cost, monthly cash flow and emergency savings, including the true yearly cost of instalment fees.
+**Making the true cost of instalments visible before you pay.**
 
-NTU MSc Enterprise AI · PE6201 Emerging AI Technologies · End-of-course project · Yao Lu
+A decision-support tool for students and young working adults. It compares **paying in full**, **paying in instalments** and **waiting to save**, and shows what each does to total cost, monthly cash flow and emergency savings, including the true yearly cost of instalment fees (0.6% per instalment = 13.84% a year).
+
+NTU MSc Enterprise AI · PE6201 Emerging AI Technologies · End-of-course project · Yao Lu (Section C)
+
+| | |
+|---|---|
+| Live product | https://judylou0117-stack.github.io/PauseBeforeBuy/ |
+| Back end (API) | https://pausebeforebuy.onrender.com (free tier: the first request may take up to a minute to wake the server) |
+| Demo video | [add the demo video link here] |
+| Report | [`report/PauseBeforeBuy_Final_Report_YaoLu.docx`](report/) |
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [`PRODUCT.md`](PRODUCT.md) | Persona, input, output, architecture diagram, metrics targeted versus reached |
+| [`data/README.md`](data/README.md) | What data is used (all synthetic or fictional) and the cited sources behind the risk thresholds |
+| [`evals/README.md`](evals/README.md) | L1 tests, live-response checks, the ten-case set and results, prompt iteration, human review |
+| [`study/README.md`](study/README.md) | User comprehension study: method, questionnaire script, anonymised responses, scoring, diagnosis |
+| [`notebooks/`](notebooks/) | 01 prototype and prompt v1→v2 · 02 back-end verification and prompt v3→v4 · 03 ten-case evaluation against the live API |
 
 ## Design principle: calculation in code, language in the model
 
-| Layer | What it does | Owned or rented |
+| Layer | What it does | Built or rented |
 |---|---|---|
-| Calculator (`backend/app/calculator.py`) | Every number: repayments, true annual rate (IRR), emergency runway, risk rules | Owned, deterministic Python |
+| Calculator (`backend/app/calculator.py`) | Every number: repayments, effective annual rate (IRR), emergency runway, risk rules | Built, deterministic Python (standard library only) |
 | Explainer (`backend/app/explainer.py`) | Turns the results into plain English or Chinese (prompt v4) | Rented: Claude Haiku 4.5 via OpenRouter |
-| Checks (`backend/app/explainer.py`) | JSON schema check and a number validator: every number the model writes must trace back to the calculator | Owned |
-| Front end (`docs/index.html`) | Intro, two-step form, pause moment, results | Owned, static page on GitHub Pages |
+| Checks (`backend/app/explainer.py`) | JSON schema check and number validator: every number the model writes must trace back to the calculator | Built |
+| Pipeline (`backend/app/service.py`, `backend/app/main.py`) | Validate → calculate → explain → check; FastAPI endpoints `POST /simulate`, `GET /health` | Built |
+| Front end (`docs/index.html`) | Intro, two-step form, 5-second pause, side-by-side results; never calculates | Built, GitHub Pages |
 
-If the model fails, returns invalid JSON or writes a number that is not in the calculation, the explanation is hidden and the user sees the calculated results only.
+If the model fails, returns invalid JSON or writes a number that is not in the calculation, the explanation is withheld and the user sees the calculated results only.
 
 ## Repository layout
 
@@ -22,12 +42,13 @@ backend/
   app/calculator.py   deterministic calculations and risk rules
   app/explainer.py    prompt v4, model call, schema and number checks
   app/service.py      full pipeline, independent of the web framework
-  app/main.py         FastAPI: POST /simulate, GET /health
-  tests/              L1 calculator tests and pipeline tests with a fake model
+  app/main.py         FastAPI: POST /simulate, GET /health, rate limit
+  tests/              19 tests: calculator (L1) and pipeline with a fake model
 docs/index.html       front end (GitHub Pages)
-notebooks/
-  01_prototype_calculator_and_prompts.ipynb      Colab prototype, L1 tests, prompt v1 → v2 iteration log
-  02_backend_verification_and_prompt_v4.ipynb    back-end tests in Colab, real model call, prompt v3 → v4 iteration
+notebooks/            Colab notebooks 01–03
+data/  evals/  study/ explainers, evaluation set, study materials
+assets/               architecture diagram and screenshots
+report/               final report
 render.yaml           back-end deployment settings
 ```
 
@@ -36,10 +57,19 @@ render.yaml           back-end deployment settings
 ```bash
 cd backend
 pip install -r requirements-dev.txt
-python -m pytest -q
+python -m pytest -q        # expected: 19 passed (no API key or network needed)
 ```
 
-No API key or network is needed: the pipeline tests use a fake model.
+## Run the back end locally
+
+```bash
+cd backend
+pip install -r requirements.txt
+export OPENROUTER_API_KEY=your-key     # optional: without it, the API returns calculations only
+uvicorn app.main:app --reload
+```
+
+Then open `docs/index.html` and set `API_BASE_URL` at the top of its script to `http://127.0.0.1:8000`. With `API_BASE_URL` empty, the page runs in demo mode with a sample case.
 
 ## API
 
@@ -58,20 +88,12 @@ Returns `calc` (all numbers and calculation steps), `explanation` (only when ver
 
 ## Deploy
 
-**Back end (Render).** Create a Web Service from this repository with root directory `backend`, build command `pip install -r requirements.txt` and start command `uvicorn app.main:app --host 0.0.0.0 --port $PORT` (or use `render.yaml`). Environment variables:
+**Back end (Render):** Web Service from this repository, root directory `backend`, build `pip install -r requirements.txt`, start `uvicorn app.main:app --host 0.0.0.0 --port $PORT` (or use `render.yaml`). Environment variables: `OPENROUTER_API_KEY` (never committed), `ALLOWED_ORIGINS` (the GitHub Pages origin), `PYTHON_VERSION=3.12.8`.
 
-| Variable | Value |
-|---|---|
-| `OPENROUTER_API_KEY` | your OpenRouter key (never commit it) |
-| `ALLOWED_ORIGINS` | your GitHub Pages origin, e.g. `https://username.github.io` |
-| `PYTHON_VERSION` | `3.12.8` |
+**Front end (GitHub Pages):** Settings → Pages → branch `main`, folder `/docs`; set `API_BASE_URL` in `docs/index.html` to the Render URL.
 
-**Front end (GitHub Pages).** Settings → Pages → deploy from branch `main`, folder `/docs`. Then set `API_BASE_URL` at the top of the script in `docs/index.html` to the Render URL. With `API_BASE_URL` empty, the page runs in demo mode with a sample case.
+## Results in brief
 
-## Cost
+Ten-case set: 10/10 deterministic checks, 8/8 explanations verified, 2/2 invalid inputs blocked, 0 injection leaks, about USD 0.0047 and 7.7 s per simulation. User study (8 classmates): 50% passed against a 70% target; all three participants who entered the scenario correctly scored 5 of 5. See `PRODUCT.md` for the full metrics table.
 
-About USD 0.004 per simulation with Claude Haiku 4.5 (about 1,200 input and 650 output tokens). The API limits each IP address to 30 requests per 10 minutes.
-
-## Limitations
-
-Educational decision support, not financial advice. Late fees, missed payments and income changes are not modelled. Thresholds (3-month emergency target from the MAS Basic Financial Planning Guide; 35% repayment warning line as a design assumption; 55% severe line with reference to the MAS TDSR cap for property loans) are adjustable settings. The number validator guarantees traceability, not correct use of each number; see the iteration log in the notebook.
+Educational decision support, not financial advice.
