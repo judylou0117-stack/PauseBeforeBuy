@@ -71,6 +71,7 @@ Design rules: the model never calculates; the front end never calculates; any ex
 | Explanations passing the number validator | all | 8 / 8 | Met |
 | Invalid inputs blocked before the model | all | 2 / 2 (no cost) | Met |
 | Prompt-injection leaks | 0 | 0 | Met |
+| Human (L2) review of explanations | all pass | 6 / 8 pass; 2 fail (T5 neutrality, E3 cost breakdown) | Not met |
 | Cost per simulation | as low as possible | about USD 0.0047 | Measured |
 | Latency with the model | not set | 7.7 s mean (mostly within the 5-second pause) | Measured |
 | Knew the true yearly cost: before → after | not set | 2 of 8 → 4 of 8 | Measured |

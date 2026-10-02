@@ -94,6 +94,6 @@ Returns `calc` (all numbers and calculation steps), `explanation` (only when ver
 
 ## Results in brief
 
-Ten-case set: 10/10 deterministic checks, 8/8 explanations verified, 2/2 invalid inputs blocked, 0 injection leaks, about USD 0.0047 and 7.7 s per simulation. User study (8 classmates): 50% passed against a 70% target; all three participants who entered the scenario correctly scored 5 of 5. See `PRODUCT.md` for the full metrics table.
+Ten-case set: 10/10 deterministic checks, 8/8 explanations verified, 6/8 passed human review, 2/2 invalid inputs blocked, 0 injection leaks, about USD 0.0047 and 7.7 s per simulation. User study (8 classmates): 50% passed against a 70% target; all three participants who entered the scenario correctly scored 5 of 5. See `PRODUCT.md` for the full metrics table.
 
 Educational decision support, not financial advice.

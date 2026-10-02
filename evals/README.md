@@ -30,6 +30,7 @@ Inputs, expected values and outcomes: [`10_case_evaluation_set.docx`](10_case_ev
 | Mean cost per simulation | USD 0.0047 (whole run USD 0.0376) |
 | Mean latency with the model | 7.7 s |
 | Keyword nudge flags | 6 / 8, of which 5 false positives after human review |
+| Human (L2) review | 6 / 8 pass; 2 fail (T5, E3) |
 
 Note: some expected values for T4, T5 and E3 were generated with the calculator itself, so those cases test the pipeline and explanations; the calculator’s own correctness rests on the L1 tests.
 
@@ -39,7 +40,16 @@ Logged in `notebooks/01_prototype_calculator_and_prompts.ipynb` (v1, v2) and `no
 
 ## L2 · Human review
 
-Every verified explanation from the ten-case run was read in full: no numeric errors, six wording issues (three medium, three low). Report Appendix D.
+Every explanation from the ten-case run was read in full by the author (table in notebook 03 and report Appendix D). L2 passes when the explanation is accurate in meaning and neutral in tone.
+
+| Result | |
+|---|---|
+| L2 pass | 6 of 8 (E2 and A1 not applicable: rejected before the model) |
+| T5 · fail | “spend freely” could encourage spending and violated neutrality |
+| E3 · fail | could mislead users about the breakdown of the SGD 1,770 extra cost |
+| Numeric errors | none |
+
+The keyword check flagged T5 for the word “rebuild”, while the human reviewer failed it for “spend freely”: keyword rules find candidates, but judging neutrality needs human or LLM-as-judge review.
 
 ## User comprehension study
 
