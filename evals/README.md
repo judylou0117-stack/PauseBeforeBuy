@@ -65,6 +65,8 @@ Final L2 decision per case (same table as notebook 03 and report Appendix D):
 
 Target was all explanations passing, so the L2 target is **not met** (see `PRODUCT.md`).
 
+**Reproducing the results:** the human review table and the summary chart are in the output of the last cell of [`notebook 03`](../notebooks/03_evaluation_10_cases.ipynb). Re-running the notebook against the deployed back end (no API key needed; the model runs with `temperature=0`) reproduces the L1 results and the explanations that the L2 review is based on (run of 1 October 2026).
+
 The keyword check flagged T5 for the word “rebuild”, while the human reviewer failed it for “spend freely”: keyword rules find candidates, but judging neutrality needs human or LLM-as-judge review.
 
 ## User comprehension study
