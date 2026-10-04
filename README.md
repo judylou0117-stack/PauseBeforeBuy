@@ -10,8 +10,8 @@ NTU MSc Enterprise AI · PE6201 Emerging AI Technologies · End-of-course projec
 |---|---|
 | Live product | https://judylou0117-stack.github.io/PauseBeforeBuy/ |
 | Back end (API) | https://pausebeforebuy.onrender.com (free tier: the first request may take up to a minute to wake the server) |
-| Demo video | [add the demo video link here] |
-| Report | [`report/PauseBeforeBuy_Final_Report_YaoLu.docx`](report/) |
+| Demo video | https://youtu.be/YGzhOuEw7qE (4 min 17 s) |
+| Report | [PDF (opens in the browser)](report/PauseBeforeBuy_Final_Report_YaoLu.pdf) · [Word](report/PauseBeforeBuy_Final_Report_YaoLu.docx) |
 
 ## Documentation
 
@@ -33,7 +33,7 @@ NTU MSc Enterprise AI · PE6201 Emerging AI Technologies · End-of-course projec
 | Pipeline (`backend/app/service.py`, `backend/app/main.py`) | Validate → calculate → explain → check; FastAPI endpoints `POST /simulate`, `GET /health` | Built |
 | Front end (`docs/index.html`) | Intro, two-step form, 5-second pause, side-by-side results; never calculates | Built, GitHub Pages |
 
-If the model fails, returns invalid JSON or writes a number that is not in the calculation, the explanation is withheld and the user sees the calculated results only.
+If the model fails, returns invalid JSON or the wrong structure, or writes a number that is not in the calculation, the explanation is withheld and the user sees the calculated results only.
 
 ## Repository layout
 
@@ -94,6 +94,6 @@ Returns `calc` (all numbers and calculation steps), `explanation` (only when ver
 
 ## Results in brief
 
-Ten-case set: 10/10 deterministic checks, 8/8 explanations verified, 6/8 passed human review, 2/2 invalid inputs blocked, 0 injection leaks, about USD 0.0047 and 7.7 s per simulation. User study (8 classmates): 50% passed against a 70% target; all three participants who entered the scenario correctly scored 5 of 5. See `PRODUCT.md` for the full metrics table.
+Ten-case set: 10/10 deterministic checks, 8/8 explanations verified, 6/8 passed human review, 2/2 invalid inputs blocked, 0 injection leaks, about USD 0.0047 and 7.7 s per simulation. User study (8 classmates): 50% passed against a 70% target; all three participants whose answers matched the correct scenario scored 5 of 5. See `PRODUCT.md` for the full metrics table.
 
 Educational decision support, not financial advice.

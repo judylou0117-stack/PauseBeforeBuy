@@ -2,7 +2,7 @@
 
 | File | What it is |
 |---|---|
-| `questionnaire_and_results..pdf` | Every question and option, with the answer distribution from all eight participants (exported from Google Forms). |
+| `questionnaire_and_results.pdf` | Every question and option, with the answer distribution from all eight participants (exported from Google Forms). |
 | `create_pausebeforebuy_form.gs` | Google Apps Script that recreates the exact questionnaire (pages, questions, options, number validation). Run it at script.google.com to rebuild the form. |
 | `PauseBeforeBuy_comprehension_scoring.xlsx` | Scoring sheet with the eight anonymised responses (P1–P8). Sheets: Guide, Summary, Key (answer key and tolerances), Responses, Scoring. |
 

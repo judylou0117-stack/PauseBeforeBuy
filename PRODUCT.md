@@ -1,6 +1,6 @@
 # PauseBeforeBuy · Product documentation
 
-**Live product:** https://judylou0117-stack.github.io/PauseBeforeBuy/ · **API:** https://pausebeforebuy.onrender.com · **Report:** [`report/`](report/)
+**Live product:** https://judylou0117-stack.github.io/PauseBeforeBuy/ · **API:** https://pausebeforebuy.onrender.com · **Demo video:** https://youtu.be/YGzhOuEw7qE · **Report:** [PDF](report/PauseBeforeBuy_Final_Report_YaoLu.pdf)
 
 ## Persona
 
