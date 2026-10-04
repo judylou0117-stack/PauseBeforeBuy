@@ -80,24 +80,37 @@ def parse_json(text):
 
 
 def check_schema(out):
+    """Strict structure check: exactly the three options once each, and every text field a non-empty string.
+    严格结构检查：三个方案各出现且仅出现一次，所有文字字段必须是非空字符串。"""
+    def is_text(v):
+        return isinstance(v, str) and bool(v.strip())
+
     problems = []
     if not isinstance(out, dict):
         return ["output is not a JSON object"]
     for key in ["overview", "options", "questions_to_ask_yourself"]:
         if key not in out:
             problems.append(f"missing field: {key}")
+    if "overview" in out and not is_text(out.get("overview")):
+        problems.append("overview must be a non-empty string")
+
     opts = out.get("options", [])
     if not isinstance(opts, list):
         return problems + ["options is not a list"]
-    names = {o.get("option") for o in opts if isinstance(o, dict)}
-    if names != REQUIRED_OPTIONS:
-        problems.append(f"options must be exactly {sorted(REQUIRED_OPTIONS)}")
+    names = [o.get("option") if isinstance(o, dict) else None for o in opts]
+    if len(opts) != len(REQUIRED_OPTIONS) or set(names) != REQUIRED_OPTIONS:
+        problems.append(f"options must be exactly {sorted(REQUIRED_OPTIONS)}, each once")
     for o in opts:
+        label = o.get("option") if isinstance(o, dict) else o
         for k in ["plain_explanation", "main_risk"]:
-            if not isinstance(o, dict) or not str(o.get(k, "")).strip():
-                problems.append(f"option {o.get('option') if isinstance(o, dict) else o}: empty {k}")
-    if not isinstance(out.get("questions_to_ask_yourself", []), list):
+            if not isinstance(o, dict) or not is_text(o.get(k)):
+                problems.append(f"option {label}: {k} must be a non-empty string")
+
+    qs = out.get("questions_to_ask_yourself", [])
+    if not isinstance(qs, list):
         problems.append("questions_to_ask_yourself is not a list")
+    elif not 1 <= len(qs) <= 3 or not all(is_text(q) for q in qs):
+        problems.append("questions_to_ask_yourself must hold 1 to 3 non-empty strings")
     return problems
 
 

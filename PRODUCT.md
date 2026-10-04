@@ -21,7 +21,7 @@
 | Settings (optional) | emergency fund target in months (default 3), repayment warning line (default 35%) |
 | Language | English or Chinese |
 
-Financial details are stored only in the user’s browser (localStorage). Nothing is linked to a bank or payment app.
+Financial details are saved only in the user’s browser (localStorage). For each simulation they are sent to the back end to calculate the result and, for the explanation, through OpenRouter to the model. The back end stores nothing; retention by OpenRouter or the model provider follows their own policies and cannot be verified from this code. Nothing is linked to a bank or payment app.
 
 ## Output
 
@@ -59,7 +59,7 @@ flowchart LR
 | Front end | Built | `docs/index.html` |
 | Hosting | Rented: GitHub Pages (front end), Render free tier (back end) | `render.yaml` |
 
-Design rules: the model never calculates; the front end never calculates; any explanation containing a number that cannot be traced to the calculator is withheld. No agent and no RAG: the path is fixed, and the few authoritative thresholds are encoded as cited rules (see `data/README.md`).
+Design rules: the model never calculates; the front end never calculates; any explanation with the wrong structure, or containing a number that cannot be traced to the calculator, is withheld. No agent and no RAG: the path is fixed, and the few authoritative thresholds are encoded as cited rules (see `data/README.md`).
 
 ## Metrics: targeted versus reached
 
@@ -78,7 +78,7 @@ Design rules: the model never calculates; the front end never calculates; any ex
 | Experience (1–5) | not set | easy to understand 4.3, trusted the numbers 4.4, the pause made me rethink 4.8 | Measured |
 | Neutrality: said the tool did not tell them what to choose | not set | 3 of 8 | Open issue |
 
-Why the comprehension target was missed: five participants entered the scenario incorrectly (fee 0.9 or 0.05 instead of 0.6, price 2,000, missing repayments), one answered without following the scenario, and with eight people each participant moves the pass rate by 12.5 points. All three participants who entered the scenario correctly scored 5 of 5. Details: `study/README.md` and report Section 5.
+Why the comprehension target was missed: inputs were not logged, but reverse-calculating the answers suggests that five participants entered the scenario incorrectly (answers consistent with a fee of 0.9 or 0.05 instead of 0.6, a price of 2,000, or missing repayments), one of them without following the scenario at all. With eight people, each participant moves the pass rate by 12.5 points. All three participants whose answers matched the correct scenario scored 5 of 5. Details: `study/README.md` and report Section 5.
 
 ## Known limitations
 

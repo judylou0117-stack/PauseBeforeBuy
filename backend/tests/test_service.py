@@ -61,6 +61,16 @@ def test_invented_number_hides_explanation():
 def test_invalid_json_falls_back_to_numbers_only():
     r = run_simulation(SAMPLE, FakeClient("Sure! Here is my answer: ..."), "m")
     assert r["checks"]["error"] == "invalid_json" and r["explanation"] is None and r["calc"]["ok"]
+    # valid JSON with the wrong structure is also rejected ｜ JSON 格式正确但结构不对，同样被拒绝
+    malformed = [
+        dict(GOOD, options=GOOD["options"] + [GOOD["options"][2]]),                     # four options, one repeated
+        dict(GOOD, overview=None),                                                      # empty overview
+        dict(GOOD, questions_to_ask_yourself=["Do I need it now?", None]),              # null question
+        dict(GOOD, options=[dict(GOOD["options"][0], plain_explanation=None)] + GOOD["options"][1:]),  # null text
+    ]
+    for bad in malformed:
+        r = run_simulation(SAMPLE, FakeClient(json.dumps(bad)), "m")
+        assert not r["checks"]["ok"] and r["explanation"] is None and r["checks"]["schema_problems"]
 
 
 def test_model_failure_falls_back_to_numbers_only():

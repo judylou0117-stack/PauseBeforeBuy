@@ -8,9 +8,9 @@
 |---|---|---|
 | Example user profiles and purchases | Synthetic, written for testing | `backend/tests/`, `notebooks/` |
 | Study scenario (laptop SGD 6,000, 12 instalments, 0.6% per instalment; income 3,500; savings 5,000; essentials 2,200; existing repayments 300) | Fictional | `study/`, report Appendix E |
-| Ten evaluation cases (5 typical, 3 edge, 2 adversarial) | Synthetic | `evals/README.md`, `notebooks/03_evaluation_10_cases.ipynb` |
+| Ten evaluation cases (5 typical, 3 edge, 2 adversarial) | Synthetic | `evals/README.md`, `evals/eval_results.csv`, `notebooks/03_evaluation_10_cases.ipynb` |
 
-Real users’ inputs are never sent to us for storage: they stay in the user’s browser and are only sent to the API to calculate one result.
+Real users’ inputs are saved only in their browser. For each simulation they are sent to the back end, which calculates the result and stores nothing, and the calculation (including the inputs) is sent through OpenRouter to the model to write the explanation. Retention by OpenRouter or the model provider follows their own policies.
 
 ## 2. Reference figures behind the risk rules
 

@@ -29,4 +29,4 @@ C1 6,432 · C2 536 · C3 1.65 months · C4 pay in full · C5 emergency savings f
 
 ## Diagnosis
 
-Reverse-calculating each answer showed what participants had actually entered: P2 price 2,000; P4 fee 0.9%; P6 fee 0.05 (0.6% divided by 12); P8 omitted existing repayments; P7’s answers matched no input. All three participants who entered the scenario correctly (P1, P3, P5) scored 5 of 5; judged against their own inputs, 5 of 8 read the results correctly. With eight people, each participant moves the pass rate by 12.5 points. Full table: report Appendix E.
+Inputs were not logged, so this is an inference: reverse-calculating each answer shows which inputs it is consistent with. P2’s answers match a price of 2,000; P4’s a fee of 0.9%; P6’s a fee of 0.05 (0.6% divided by 12); P8’s missing existing repayments; P7’s answers match no input. All three participants whose answers matched the correct scenario (P1, P3, P5) scored 5 of 5; judged against the inferred inputs, 5 of 8 read the results correctly. With eight people, each participant moves the pass rate by 12.5 points. Full table: report Appendix E.

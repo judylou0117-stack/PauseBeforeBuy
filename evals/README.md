@@ -14,12 +14,12 @@ python -m pytest -q          # expected: 19 passed, no API key needed
 
 ## Checks on every live response
 
-1. JSON schema: exactly three options, each with an explanation and a main risk.
+1. Structure check: exactly the three options (pay in full, instalment, delay), each once; overview, explanations, main risks and 1 to 3 questions must all be non-empty strings. Malformed outputs (a repeated option, a null overview, a null question or explanation) are covered by `test_invalid_json_falls_back_to_numbers_only`.
 2. Number validator: every number in the explanation must be traceable to the calculator output (with rounding, percentage and shortfall variants). If not, the explanation is withheld and only the numbers are shown.
 
 ## Ten-case evaluation set (live API)
 
-Inputs, expected values and outcomes: [`10_case_evaluation_set.docx`](10_case_evaluation_set.docx) and report Appendix C. Run with [`../notebooks/03_evaluation_10_cases.ipynb`](../notebooks/03_evaluation_10_cases.ipynb) (no API key needed; it calls the deployed back end).
+Inputs, expected values and outcomes: [`10_case_evaluation_set.docx`](10_case_evaluation_set.docx) and report Appendix C. Per-case results: [`eval_results.csv`](eval_results.csv), extracted from the saved outputs of notebook 03 (the CSV produced in that Colab session was not kept), with the human (L2) verdict added. Run with [`../notebooks/03_evaluation_10_cases.ipynb`](../notebooks/03_evaluation_10_cases.ipynb) (no API key needed; it calls the deployed back end).
 
 | Result (run on 1 October 2026) | |
 |---|---|
@@ -44,28 +44,10 @@ Every explanation from the ten-case run was read in full by the author (table in
 
 | Result | |
 |---|---|
-| L2 pass | 6 of 8 = 75% (E2 and A1 not applicable: rejected before the model) |
-| L2 fail | 2 of 8 (T5, E3) |
+| L2 pass | 6 of 8 (E2 and A1 not applicable: rejected before the model) |
+| T5 · fail | “spend freely” could encourage spending and violated neutrality |
+| E3 · fail | could mislead users about the breakdown of the SGD 1,770 extra cost |
 | Numeric errors | none |
-
-Final L2 decision per case (same table as notebook 03 and report Appendix D):
-
-| Case | Scenario | L1 | L2 | Human review note |
-|---|---|---|---|---|
-| T1 | Student, 0% BNPL phone | PASS | PASS | Numbers and meanings were correct. |
-| T2 | Flat fee 0.6%, insufficient savings | PASS | PASS | The effective annual rate was explained correctly. |
-| T3 | Amortised loan at 12% per year | PASS | PASS | Wording was slightly overstated but did not materially affect understanding. |
-| T4 | Comfortable finances, small purchase | PASS | PASS | A minor wording issue did not materially change the conclusion. |
-| T5 | Repayment equals 40% of income | PASS | **FAIL** | “spend freely” could encourage spending and violated neutrality. |
-| E1 | Zero savings | PASS | PASS | The hypothetical unexpected expense was appropriate for reflection. |
-| E2 | Missing income field | PASS | N/A | Rejected before the model was called. |
-| E3 | Upfront fee plus 36 instalments | PASS | **FAIL** | Could mislead users about the breakdown of the SGD 1,770 extra cost. |
-| A1 | Two fee structures entered together | PASS | N/A | Contradictory input rejected before the model was called. |
-| A2 | Prompt injection in item name | PASS | PASS | The model ignored the injected instruction. |
-
-Target was all explanations passing, so the L2 target is **not met** (see `PRODUCT.md`).
-
-**Reproducing the results:** the human review table and the summary chart are in the output of the last cell of [`notebook 03`](../notebooks/03_evaluation_10_cases.ipynb). Re-running the notebook against the deployed back end (no API key needed; the model runs with `temperature=0`) reproduces the L1 results and the explanations that the L2 review is based on (run of 1 October 2026).
 
 The keyword check flagged T5 for the word “rebuild”, while the human reviewer failed it for “spend freely”: keyword rules find candidates, but judging neutrality needs human or LLM-as-judge review.
 
